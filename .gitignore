@@ -36,3 +36,4 @@ npm-debug.log*
 
 # ArchUI runtime state
 .archui/layout.yaml
+*.mov
