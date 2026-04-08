@@ -1,25 +1,25 @@
 .overlay {
   position: fixed; inset: 0;
-  background: rgba(0,0,0,.6);
+  background: var(--overlay-heavy);
   display: flex; align-items: flex-start; justify-content: center;
   padding-top: 15vh;
   z-index: 1000;
 }
 .palette {
-  background: #1e1e2e;
-  border: 1px solid #45475a;
-  border-radius: 10px;
+  background: var(--bg-crust);
+  border: 1px solid var(--bg-surface1);
+  border-radius: var(--radius-md);
   width: 520px;
   overflow: hidden;
-  box-shadow: 0 24px 60px rgba(0,0,0,.6);
+  box-shadow: var(--shadow-lg);
 }
 .input {
   width: 100%;
   padding: 14px 16px;
   border: none;
-  border-bottom: 1px solid #313244;
+  border-bottom: 1px solid var(--bg-surface0);
   background: transparent;
-  color: #cdd6f4;
+  color: var(--text);
   font-size: 1rem;
   outline: none;
   box-sizing: border-box;
@@ -30,11 +30,11 @@
   padding: 10px 16px;
   cursor: pointer;
   font-size: 0.875rem;
-  color: #cdd6f4;
+  color: var(--text);
   transition: background .1s;
 }
-.item:hover, .itemActive { background: #313244; }
+.item:hover, .itemActive { background: var(--bg-surface0); }
 .itemIcon { font-size: 1rem; opacity: .7; }
 .itemLabel { flex: 1; }
-.itemHint { font-size: 0.75rem; color: #6c7086; }
-.empty { padding: 16px; text-align: center; color: #6c7086; font-size: 0.875rem; }
+.itemHint { font-size: 0.75rem; color: var(--overlay0); }
+.empty { padding: 16px; text-align: center; color: var(--overlay0); font-size: 0.875rem; }

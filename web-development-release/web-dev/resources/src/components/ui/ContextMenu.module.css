@@ -1,11 +1,11 @@
 .menu {
   position: fixed;
-  background: #1e1e2e;
-  border: 1px solid #45475a;
-  border-radius: 8px;
+  background: var(--bg-crust);
+  border: 1px solid var(--bg-surface1);
+  border-radius: var(--radius-sm);
   padding: 4px 0;
   min-width: 160px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.5);
+  box-shadow: var(--shadow-md);
   z-index: 900;
 }
 .item {
@@ -13,9 +13,9 @@
   padding: 8px 14px;
   cursor: pointer;
   font-size: 0.8rem;
-  color: #cdd6f4;
+  color: var(--text);
   transition: background .1s;
 }
-.item:hover { background: #313244; }
-.itemDanger { color: #f38ba8; }
-.sep { height: 1px; background: #313244; margin: 4px 0; }
+.item:hover { background: var(--bg-surface0); }
+.itemDanger { color: var(--red); }
+.sep { height: 1px; background: var(--bg-surface0); margin: 4px 0; }
