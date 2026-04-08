@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as crypto from 'crypto'
 import * as readline from 'readline'
+import { fileURLToPath } from 'url'
 import { execSync, spawnSync, spawn } from 'child_process'
 import { parse as parseYaml } from 'yaml'
 
@@ -70,7 +71,10 @@ function checkCursorInstalled(targetPath: string): boolean {
 }
 
 function checkClaudeCodeInstalled(targetPath: string): boolean {
-  return fs.existsSync(path.join(targetPath, '.claude', 'skills', 'archui-spec', 'SKILL.md'))
+  return (
+    fs.existsSync(path.join(targetPath, '.claude', 'skills', 'archui-spec', 'SKILL.md')) &&
+    fs.existsSync(path.join(targetPath, '.claude', 'skills', 'archui-docs', 'SKILL.md'))
+  )
 }
 
 function checkCodexInstalled(targetPath: string): boolean {
@@ -325,7 +329,7 @@ async function runAgentSetup(targetPath: string): Promise<void> {
 
     try {
       console.log(`  → Installing ArchUI plugin for ${agent.name}...`)
-      const repoRoot = path.resolve(__dirname, '../../..')
+      const repoRoot = path.resolve(fileURLToPath(new URL('.', import.meta.url)), '../../..')
       execSync('bash -s', {
         input: agent.deployScript,
         cwd: targetPath,
