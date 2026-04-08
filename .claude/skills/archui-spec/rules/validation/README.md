@@ -18,6 +18,14 @@ node cli/resources/dist/index.js validate .
 - `ERROR` — blocking, fix all before proceeding
 - `WARN` — advisory, acceptable but note them
 
+## Common warnings
+
+| Warning | Meaning | Fix |
+|---|---|---|
+| `frontmatter/description-multiline` | `description` field spans multiple sentences or lines | Rewrite as one concise, declarative sentence |
+| `links/memory-extra-links` | MEMORY module has outbound links beyond its parent SPEC | Advisory only — remove extra links if possible |
+| `spec/multiple-memory` | SPEC module has more than one MEMORY submodule | Keep at most one MEMORY submodule |
+
 ## Common errors
 
 | Error code | Meaning | Fix |
@@ -29,8 +37,6 @@ node cli/resources/dist/index.js validate .
 | `archui/missing-file` | `.archui/index.yaml` not found | Create it with at minimum `schema_version: 1` and a `uuid` |
 | `spec/missing-harness` | SPEC module has no HARNESS submodule | Add a `<name>-harness/` subfolder with a `HARNESS.md` identity document |
 | `spec/multiple-harness` | SPEC module has more than one HARNESS submodule | Keep exactly one HARNESS submodule |
-| `spec/missing-memory` | SPEC module has no MEMORY submodule | Add a `<name>-memory/` subfolder with a `MEMORY.md` identity document |
-| `spec/multiple-memory` | SPEC module has more than one MEMORY submodule | Keep exactly one MEMORY submodule |
 
 ## If validation fails
 

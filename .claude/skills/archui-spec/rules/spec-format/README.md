@@ -6,9 +6,9 @@ Every module folder contains exactly one typed identity document. The filename d
 
 | File | Node type | When to use |
 |---|---|---|
-| `SPEC.md` | Spec | An implementation specification with generated `resources/`. Must have HARNESS + MEMORY submodules. |
-| `HARNESS.md` | Harness | Test harness for a SPEC. Exactly one link → parent SPEC. |
-| `MEMORY.md` | Memory | Persistent memory record. Links only to parent SPEC (softly enforced). |
+| `SPEC.md` | Spec | An implementation specification with generated `resources/`. Must have exactly one HARNESS as a **direct** submodule; MEMORY submodule is optional (at most one). |
+| `HARNESS.md` | Harness | Test harness for a SPEC. Exactly one link → direct parent SPEC. No other links permitted. |
+| `MEMORY.md` | Memory | Persistent memory record. Links only to parent SPEC. Additional outbound links are a validation **warning** (not an error). |
 | `SKILL.md` | Skill | Reusable skill or knowledge unit. No `resources/` typically. |
 | `README.md` | Generic | Untyped fallback when no stronger type applies. |
 
@@ -27,7 +27,9 @@ description: One-sentence summary — always loaded into agent context, keep it 
 Body markdown here.
 ```
 
-**Forbidden in identity documents:** `uuid`, `submodules`, `links`, `layout`, any other structural field.
+**Forbidden in identity documents:** `uuid`, `submodules`, `links`, `layout`, any other structural field. These belong in `.archui/index.yaml`, not frontmatter.
+
+**Description must be a single, declarative, self-contained sentence.** Multi-paragraph or multi-sentence descriptions trigger a validation warning. Keep it sharp — it is always loaded into agent context.
 
 ## Default names for whitelisted hidden folders
 
@@ -51,9 +53,9 @@ When creating an identity document for a root-level whitelisted hidden folder, u
 ## .archui/index.yaml format
 
 ```yaml
-schema_version: 1
-uuid: <stable 8-hex UUID — never change after creation>
-submodules:             # folder-name → child uuid (must match actual subfolders)
+schema_version: 1          # REQUIRED
+uuid: <stable 8-hex UUID — never change after creation>   # REQUIRED
+submodules:                # folder-name → child uuid (must match actual subfolders)
   folder-name-a: <uuid-a>
   folder-name-b: <uuid-b>
 links:
@@ -63,10 +65,20 @@ links:
 ```
 
 **Rules:**
+- `schema_version` and `uuid` are REQUIRED fields
 - `uuid` is permanent — never change it, even on rename/move
 - `submodules` is a **map** (`folder-name → uuid`), not an array
 - `submodules` keys must match actual subfolders on disk (bidirectional)
 - `links` targets are UUIDs, not paths
+
+**HARNESS link structure** (exactly one link, no others permitted):
+```yaml
+links:
+  - uuid: <parent SPEC uuid>
+    relation: implements
+```
+
+**layout.yaml:** The CLI checks for this file's existence but does not validate its contents. Stale UUIDs in `layout.yaml` are silently ignored.
 
 ## Module design principles
 
