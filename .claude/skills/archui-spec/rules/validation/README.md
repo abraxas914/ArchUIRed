@@ -27,6 +27,10 @@ node cli/resources/dist/index.js validate .
 | `archui/submodule-not-found` | submodules map references a folder or UUID that doesn't exist | Remove the entry or create the missing folder |
 | `frontmatter/missing-field` | README.md is missing `name` or `description` | Add the missing field |
 | `archui/missing-file` | `.archui/index.yaml` not found | Create it with at minimum `schema_version: 1` and a `uuid` |
+| `spec/missing-harness` | SPEC module has no HARNESS submodule | Add a `<name>-harness/` subfolder with a `HARNESS.md` identity document |
+| `spec/multiple-harness` | SPEC module has more than one HARNESS submodule | Keep exactly one HARNESS submodule |
+| `spec/missing-memory` | SPEC module has no MEMORY submodule | Add a `<name>-memory/` subfolder with a `MEMORY.md` identity document |
+| `spec/multiple-memory` | SPEC module has more than one MEMORY submodule | Keep exactly one MEMORY submodule |
 
 ## If validation fails
 

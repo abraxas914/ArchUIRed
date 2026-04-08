@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Landing Screen — ArchUI Screen Preview</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    :root {
+      --bg-base: #11111b;
+      --bg-mantle: #181825;
+      --bg-crust: #1e1e2e;
+      --bg-surface0: #313244;
+      --bg-surface1: #45475a;
+      --text: #cdd6f4;
+      --subtext1: #bac2de;
+      --subtext0: #a6adc8;
+      --overlay2: #9399b2;
+      --overlay1: #7f849c;
+      --overlay0: #6c7086;
+      --blue: #89b4fa;
+      --lavender: #b4befe;
+      --teal: #94e2d5;
+      --green: #a6e3a1;
+      --yellow: #f9e2af;
+      --peach: #fab387;
+      --red: #f38ba8;
+      --canvas-bg: #0f0f17;
+      --node-bg: #1e1e2e;
+      --node-border: #45475a;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+      --radius-xs: 4px;
+      --shadow-md: 0 8px 24px rgba(0,0,0,.5);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: var(--canvas-bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #root {
+      width: 100%;
+      height: 100%;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(99,102,120,0.12) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes wordmarkReveal {
+      from { opacity: 0; transform: translateY(-8px) scale(0.96); letter-spacing: 0.3em; }
+      to   { opacity: 1; transform: translateY(0) scale(1); letter-spacing: 0.04em; }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(137,180,250,0); }
+      50%      { box-shadow: 0 0 0 6px rgba(137,180,250,0.1); }
+    }
+
+    @keyframes loadingSpin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    @keyframes cardEntrance {
+      from { opacity: 0; transform: scale(0.95) translateY(8px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @keyframes screenSlideOut {
+      from { opacity: 1; transform: scale(1); }
+      to   { opacity: 0; transform: scale(0.97) translateY(-8px); }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useCallback, useEffect, useRef } = React;
+
+    const RECENT_PROJECTS = [
+      { name: 'ArchUI',          path: '~/Projects/ArchUI',              lastOpened: '2 hours ago' },
+      { name: 'ActionLink',      path: '~/Cyberlingke/ActionLink',       lastOpened: 'Yesterday' },
+      { name: 'Portal Firmware', path: '~/Cyberlingke/portal-firmware',  lastOpened: '3 days ago' },
+      { name: 'Design System',   path: '~/Projects/design-system',      lastOpened: 'Last week' },
+    ];
+
+    function Wordmark({ animate }) {
+      return (
+        <div style={{
+          textAlign: 'center',
+          marginBottom: 40,
+          animation: animate ? 'wordmarkReveal 0.6s cubic-bezier(0.16,1,0.3,1) both' : undefined,
+        }}>
+          <div style={{
+            fontSize: 36,
+            fontWeight: 700,
+            color: 'var(--text)',
+            letterSpacing: '0.04em',
+            lineHeight: 1.2,
+          }}>
+            <span style={{ color: 'var(--blue)' }}>Arch</span>UI
+          </div>
+          <div style={{
+            fontSize: 13,
+            color: 'var(--overlay1)',
+            marginTop: 8,
+            letterSpacing: '0.02em',
+          }}>
+            Knowledge architecture, visualized
+          </div>
+        </div>
+      );
+    }
+
+    function ProjectCard({ project, index, onClick, loading, disabled }) {
+      const [hovered, setHovered] = useState(false);
+
+      return (
+        <div
+          onClick={() => !disabled && onClick(project)}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          style={{
+            width: 200,
+            height: 80,
+            padding: 12,
+            borderRadius: 8,
+            border: `1px solid ${loading ? 'var(--blue)' : hovered && !disabled ? 'var(--blue)' : 'var(--node-border)'}`,
+            background: loading ? 'rgba(137,180,250,0.05)' : 'var(--node-bg)',
+            boxShadow: hovered && !disabled ? '0 4px 16px rgba(0,0,0,0.4)' : '0 1px 2px rgba(0,0,0,0.06)',
+            cursor: disabled ? 'not-allowed' : 'pointer',
+            transition: 'all 0.15s ease',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            position: 'relative',
+            opacity: disabled && !loading ? 0.5 : 1,
+            animation: `cardEntrance 0.35s cubic-bezier(0.16,1,0.3,1) ${0.1 + index * 0.08}s both`,
+            userSelect: 'none',
+            overflow: 'hidden',
+          }}
+        >
+          {loading && (
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'rgba(15,15,23,0.7)',
+              zIndex: 2,
+              borderRadius: 7,
+            }}>
+              <div style={{
+                width: 20,
+                height: 20,
+                border: '2px solid var(--bg-surface0)',
+                borderTopColor: 'var(--blue)',
+                borderRadius: '50%',
+                animation: 'loadingSpin 0.7s linear infinite',
+              }} />
+            </div>
+          )}
+          <div style={{
+            fontSize: 13,
+            fontWeight: 500,
+            color: 'var(--text)',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            lineHeight: 1.3,
+          }}>
+            {project.name}
+          </div>
+          <div style={{
+            fontSize: 11,
+            color: 'var(--overlay1)',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            marginTop: 4,
+          }}>
+            {project.path}
+          </div>
+          <div style={{
+            fontSize: 10,
+            color: 'var(--overlay0)',
+            marginTop: 'auto',
+            paddingTop: 4,
+          }}>
+            {project.lastOpened}
+          </div>
+        </div>
+      );
+    }
+
+    function ActionButton({ label, primary, onClick, disabled, icon }) {
+      const [hovered, setHovered] = useState(false);
+
+      return (
+        <button
+          onClick={onClick}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          disabled={disabled}
+          style={{
+            height: 40,
+            padding: '0 16px',
+            borderRadius: 6,
+            fontSize: 13,
+            fontWeight: 600,
+            cursor: disabled ? 'not-allowed' : 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+            transition: 'all 0.15s ease',
+            border: primary
+              ? '1px solid transparent'
+              : `1px solid ${hovered ? 'var(--blue)' : 'var(--node-border)'}`,
+            background: primary
+              ? hovered ? '#7aa8f0' : 'var(--blue)'
+              : hovered ? 'rgba(137,180,250,0.08)' : 'var(--node-bg)',
+            color: primary
+              ? 'var(--bg-base)'
+              : hovered ? 'var(--blue)' : 'var(--text)',
+            opacity: disabled ? 0.5 : 1,
+            letterSpacing: '0.01em',
+          }}
+        >
+          {icon && <span style={{ fontSize: 15, lineHeight: 1 }}>{icon}</span>}
+          {label}
+        </button>
+      );
+    }
+
+    function ErrorBanner({ message, onDismiss }) {
+      if (!message) return null;
+      return (
+        <div style={{
+          background: 'rgba(243,139,168,0.1)',
+          border: '1px solid rgba(243,139,168,0.3)',
+          borderRadius: 'var(--radius-sm)',
+          padding: '10px 14px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
+          marginTop: 16,
+          animation: 'fadeSlideUp 0.25s ease both',
+        }}>
+          <span style={{ color: 'var(--red)', fontSize: 15, lineHeight: 1 }}>!</span>
+          <span style={{ fontSize: 12, color: 'var(--red)', flex: 1, lineHeight: 1.5 }}>{message}</span>
+          <button
+            onClick={onDismiss}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--red)',
+              cursor: 'pointer',
+              fontSize: 14,
+              padding: '2px 4px',
+              borderRadius: 'var(--radius-xs)',
+              lineHeight: 1,
+            }}
+          >
+            ×
+          </button>
+        </div>
+      );
+    }
+
+    function CanvasScreenMock() {
+      return (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'var(--canvas-bg)',
+          zIndex: 100,
+          display: 'flex',
+          flexDirection: 'column',
+          animation: 'fadeSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) both',
+        }}>
+          <div style={{
+            height: 44,
+            background: 'var(--bg-crust)',
+            borderBottom: '1px solid var(--node-border)',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '0 16px',
+            gap: 6,
+            flexShrink: 0,
+          }}>
+            <span style={{ fontSize: 13, color: 'var(--overlay1)' }}>ArchUI</span>
+            <span style={{ fontSize: 13, color: 'var(--overlay0)' }}>›</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>Root</span>
+            <div style={{ flex: 1 }} />
+            <div style={{
+              fontSize: 11,
+              color: 'var(--overlay0)',
+              background: 'var(--bg-surface0)',
+              border: '1px solid var(--node-border)',
+              borderRadius: 20,
+              padding: '2px 10px',
+            }}>
+              Depth: <span style={{ color: 'var(--subtext0)' }}>0</span>
+            </div>
+          </div>
+
+          <div style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'relative',
+          }}>
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundImage: 'radial-gradient(circle, rgba(99,102,120,0.12) 1px, transparent 1px)',
+              backgroundSize: '28px 28px',
+              pointerEvents: 'none',
+            }} />
+
+            <div style={{
+              width: 320,
+              background: 'var(--node-bg)',
+              border: '1.5px solid var(--node-border)',
+              borderRadius: 'var(--radius-md)',
+              boxShadow: 'var(--shadow-md)',
+              position: 'relative',
+              animation: 'cardEntrance 0.5s cubic-bezier(0.16,1,0.3,1) 0.15s both',
+            }}>
+              <div style={{
+                height: 4,
+                borderRadius: '9px 9px 0 0',
+                background: 'var(--blue)',
+                width: '100%',
+              }} />
+              <div style={{ padding: '12px 14px 11px' }}>
+                <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>Root Module</div>
+                <div style={{
+                  fontFamily: "'SF Mono', monospace",
+                  fontSize: 11,
+                  color: 'var(--overlay0)',
+                  marginTop: 3,
+                }}>
+                  a1b2c3d4
+                </div>
+              </div>
+              <div style={{ height: 1, background: 'var(--bg-surface0)' }} />
+              <div style={{ padding: '13px 18px', fontSize: 13, color: 'var(--subtext1)', lineHeight: 1.6 }}>
+                Project root module loaded successfully.
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function App() {
+      const [loadingProject, setLoadingProject] = useState(null);
+      const [error, setError] = useState(null);
+      const [showCanvas, setShowCanvas] = useState(false);
+      const [showEmpty, setShowEmpty] = useState(false);
+
+      const handleProjectClick = useCallback((project) => {
+        setLoadingProject(project.name);
+        setError(null);
+        setTimeout(() => {
+          setLoadingProject(null);
+          setShowCanvas(true);
+        }, 1200);
+      }, []);
+
+      const handleOpenFolder = useCallback(() => {
+        setError(null);
+        setLoadingProject('__open__');
+        setTimeout(() => {
+          setLoadingProject(null);
+          setShowCanvas(true);
+        }, 1500);
+      }, []);
+
+      const handleNewProject = useCallback(() => {
+        setError(null);
+        setLoadingProject('__new__');
+        setTimeout(() => {
+          setLoadingProject(null);
+          setShowCanvas(true);
+        }, 1500);
+      }, []);
+
+      const handleSimulateError = useCallback(() => {
+        setError('Selected folder is not a valid ArchUI project. Missing identity document (README.md).');
+      }, []);
+
+      const handleReset = useCallback(() => {
+        setShowCanvas(false);
+        setLoadingProject(null);
+        setError(null);
+      }, []);
+
+      const isLoading = loadingProject !== null;
+      const projects = showEmpty ? [] : RECENT_PROJECTS;
+
+      if (showCanvas) {
+        return (
+          <>
+            <CanvasScreenMock />
+            <button
+              onClick={handleReset}
+              style={{
+                position: 'fixed',
+                bottom: 20,
+                right: 20,
+                zIndex: 200,
+                background: 'var(--bg-surface0)',
+                border: '1px solid var(--node-border)',
+                color: 'var(--subtext0)',
+                fontSize: 11,
+                fontWeight: 600,
+                padding: '8px 14px',
+                borderRadius: 'var(--radius-sm)',
+                cursor: 'pointer',
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+              }}
+            >
+              Back to Landing
+            </button>
+          </>
+        );
+      }
+
+      return (
+        <div style={{
+          position: 'relative',
+          zIndex: 1,
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          padding: '20vh 32px 40px',
+        }}>
+          <Wordmark animate={true} />
+
+          {/* Recent Projects section */}
+          <div style={{
+            width: '100%',
+            maxWidth: 432,
+            animation: 'fadeSlideUp 0.4s ease 0.2s both',
+          }}>
+            <div style={{
+              fontSize: 14,
+              fontWeight: 600,
+              color: 'var(--overlay2)',
+              marginBottom: 16,
+              letterSpacing: '0.01em',
+            }}>
+              Recent Projects
+            </div>
+
+            {projects.length > 0 ? (
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, 200px)',
+                gap: 16,
+                marginBottom: 32,
+              }}>
+                {projects.map((project, i) => (
+                  <ProjectCard
+                    key={project.name}
+                    project={project}
+                    index={i}
+                    onClick={handleProjectClick}
+                    loading={loadingProject === project.name}
+                    disabled={isLoading}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div style={{
+                fontSize: 13,
+                color: 'var(--overlay0)',
+                fontStyle: 'italic',
+                textAlign: 'center',
+                padding: '24px 0 32px',
+                animation: 'fadeSlideUp 0.3s ease both',
+              }}>
+                Open a folder or create a new project to get started.
+              </div>
+            )}
+
+            {/* Action buttons */}
+            <div style={{
+              display: 'flex',
+              gap: 12,
+              animation: 'fadeSlideUp 0.4s ease 0.35s both',
+            }}>
+              <ActionButton
+                label="Open Folder…"
+                primary
+                icon="📂"
+                onClick={handleOpenFolder}
+                disabled={isLoading}
+              />
+              <ActionButton
+                label="New Project"
+                icon="✦"
+                onClick={handleNewProject}
+                disabled={isLoading}
+              />
+            </div>
+
+            <ErrorBanner
+              message={error}
+              onDismiss={() => setError(null)}
+            />
+          </div>
+
+          {/* Demo controls */}
+          <div style={{
+            position: 'fixed',
+            bottom: 20,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            display: 'flex',
+            gap: 8,
+            background: 'var(--bg-mantle)',
+            border: '1px solid var(--node-border)',
+            borderRadius: 'var(--radius-md)',
+            padding: '8px 12px',
+            zIndex: 50,
+            alignItems: 'center',
+          }}>
+            <span style={{
+              fontSize: 10,
+              fontWeight: 600,
+              color: 'var(--overlay0)',
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              marginRight: 4,
+            }}>
+              Demo
+            </span>
+            <DemoButton label="Simulate Error" onClick={handleSimulateError} disabled={isLoading} />
+            <DemoButton label={showEmpty ? "Show Projects" : "Empty State"} onClick={() => setShowEmpty(e => !e)} disabled={isLoading} />
+          </div>
+
+          {/* Watermark */}
+          <div style={{
+            position: 'fixed',
+            bottom: 20,
+            left: 20,
+            fontSize: 11,
+            color: 'var(--overlay0)',
+            letterSpacing: '0.06em',
+            userSelect: 'none',
+          }}>
+            ArchUI · Landing Screen Preview
+          </div>
+        </div>
+      );
+    }
+
+    function DemoButton({ label, onClick, disabled }) {
+      const [hovered, setHovered] = useState(false);
+      return (
+        <button
+          onClick={onClick}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          disabled={disabled}
+          style={{
+            background: hovered ? 'var(--bg-surface0)' : 'var(--bg-mantle)',
+            border: '1px solid var(--node-border)',
+            color: hovered ? 'var(--text)' : 'var(--subtext0)',
+            fontSize: 11,
+            fontWeight: 600,
+            padding: '5px 12px',
+            borderRadius: 'var(--radius-sm)',
+            cursor: disabled ? 'not-allowed' : 'pointer',
+            transition: 'all 0.15s ease',
+            letterSpacing: '0.02em',
+            opacity: disabled ? 0.5 : 1,
+          }}
+        >
+          {label}
+        </button>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>

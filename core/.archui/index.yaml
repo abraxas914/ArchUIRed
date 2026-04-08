@@ -3,7 +3,6 @@ uuid: 2c4d8f1a
 submodules:
   filesystem-rules: 9e2b5d7c
   uuid-system: 4a6f8e3b
-  readme-schema: 1d3c7a9e
   link-system: 8b2e4f6d
   testing-qa: 8a4c6e2f
   migration: 3f7b2e9d
@@ -14,6 +13,7 @@ submodules:
   core-harness: aa000001
   schema: cd7d3790
   adoption: b7ba3280
+  agent-config: 8250301b
 links:
   - uuid: 5c9a1e3f
     relation: related-to
@@ -23,43 +23,3 @@ links:
     relation: related-to
     description: cli depends-on core; core defines the rules that cli validates and
       operates on
-layout:
-  9e2b5d7c:
-    x: 40
-    y: 40
-  4a6f8e3b:
-    x: 280
-    y: 40
-  1d3c7a9e:
-    x: 520
-    y: 40
-  8b2e4f6d:
-    x: 760
-    y: 40
-  8a4c6e2f:
-    x: 40
-    y: 210
-  3f7b2e9d:
-    x: 280
-    y: 210
-  74bec9da:
-    x: 520
-    y: 210
-  f7cbda7f:
-    x: 760
-    y: 210
-  7e70243e:
-    x: 40
-    y: 380
-  7dbb954d:
-    x: 280
-    y: 380
-  aa000001:
-    x: 520
-    y: 380
-  stub-5c9a1e3f:
-    x: 1049.2522067920545
-    y: 41.07477932079456
-  stub-1a5b9c3d:
-    x: 1260
-    y: 40

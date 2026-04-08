@@ -91,6 +91,42 @@ export function validateStructure(rootPath: string, isRoot = true): Violation[] 
     }
   }
 
+  // SPEC modules must contain exactly one HARNESS submodule and one MEMORY submodule
+  if (fs.existsSync(path.join(abs, 'SPEC.md'))) {
+    const harnessSubmodules = [...declaredSubmodules].filter(name =>
+      fs.existsSync(path.join(abs, name, 'HARNESS.md'))
+    )
+    const memorySubmodules = [...declaredSubmodules].filter(name =>
+      fs.existsSync(path.join(abs, name, 'MEMORY.md'))
+    )
+    if (harnessSubmodules.length === 0) {
+      violations.push({
+        ruleId: 'spec/missing-harness',
+        filePath: rootPath,
+        message: 'SPEC module must contain exactly one HARNESS submodule',
+      })
+    } else if (harnessSubmodules.length > 1) {
+      violations.push({
+        ruleId: 'spec/multiple-harness',
+        filePath: rootPath,
+        message: `SPEC module must contain exactly one HARNESS submodule, but found ${harnessSubmodules.length}: ${harnessSubmodules.join(', ')}`,
+      })
+    }
+    if (memorySubmodules.length === 0) {
+      violations.push({
+        ruleId: 'spec/missing-memory',
+        filePath: rootPath,
+        message: 'SPEC module must contain exactly one MEMORY submodule',
+      })
+    } else if (memorySubmodules.length > 1) {
+      violations.push({
+        ruleId: 'spec/multiple-memory',
+        filePath: rootPath,
+        message: `SPEC module must contain exactly one MEMORY submodule, but found ${memorySubmodules.length}: ${memorySubmodules.join(', ')}`,
+      })
+    }
+  }
+
   // Recurse into declared submodules
   for (const folderName of declaredSubmodules) {
     const childPath = path.join(rootPath, folderName)

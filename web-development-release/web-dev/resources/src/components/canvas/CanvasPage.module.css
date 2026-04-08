@@ -24,11 +24,11 @@
   bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(243, 139, 168, .15);
+  background: var(--red-muted);
   border: 1px solid var(--red);
   color: var(--red);
   padding: 8px 16px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-size: 0.8rem;
   z-index: 100;
   max-width: 480px;
@@ -48,7 +48,7 @@
   padding: 5px 12px;
   background: var(--bg-crust);
   border: 1px solid var(--bg-surface1);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   color: var(--subtext1);
   font-size: 0.75rem;
   cursor: pointer;

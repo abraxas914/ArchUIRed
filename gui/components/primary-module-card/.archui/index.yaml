@@ -11,7 +11,7 @@ submodules:
   command-bar: e04a0523
   module-handle: 470c4fc8
 links:
-  - uuid: 1d3c7a9e
+  - uuid: cd7d3790
     relation: depends-on
     description: Module-node reads name, description, submodules, and links from the
       module's README.md frontmatter to populate its visual fields.

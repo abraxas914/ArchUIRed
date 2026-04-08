@@ -44,7 +44,7 @@ The index is **derived data** — it is never persisted as an authoritative file
 # Conceptual index derived at validation time:
 4a6f8e3b → core/uuid-system
 9e2b5d7c → core/filesystem-rules
-1d3c7a9e → core/readme-schema
+cd7d3790 → core/schema
 8b2e4f6d → core/link-system
 ...
 ```

@@ -1,0 +1,22 @@
+schema_version: 1
+uuid: "8250301b"
+submodules:
+  skill-templates: 6aea7af7
+  rule-templates: bc99257e
+  claude-code: 5ae7bd27
+  cursor: eae5e5c9
+  codex: 719a8fc3
+  copilot: c91296a3
+links:
+  - uuid: 9e2b5d7c
+    relation: depends-on
+    description: Reads filesystem-rules to generate validation and structure skills
+  - uuid: 4a6f8e3b
+    relation: depends-on
+    description: Reads uuid-system to generate UUID management rules
+  - uuid: 8b2e4f6d
+    relation: depends-on
+    description: Reads link-system to generate cross-module linking skills
+  - uuid: cd7d3790
+    relation: depends-on
+    description: Reads schema type definitions for type-aware skill generation

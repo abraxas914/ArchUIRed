@@ -260,7 +260,7 @@ export function CanvasPage() {
           <Controls showInteractive={false} />
           <MiniMap
             nodeColor={() => 'var(--node-bg)'}
-            maskColor="rgba(0,0,0,.4)"
+            maskColor="var(--overlay-dim)"
             style={{ background: 'var(--bg-crust)' }}
           />
         </ReactFlow>

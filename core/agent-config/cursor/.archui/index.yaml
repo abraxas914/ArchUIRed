@@ -1,0 +1,9 @@
+schema_version: 1
+uuid: eae5e5c9
+links:
+  - uuid: 6aea7af7
+    relation: depends-on
+    description: Reads skill-templates to generate .cursor/skills/ content
+  - uuid: bc99257e
+    relation: depends-on
+    description: Reads rule-templates to generate .cursor/rules/ content

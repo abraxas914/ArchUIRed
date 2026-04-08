@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Navigation Component — ArchUI Preview</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    :root {
+      --bg-base: #11111b;
+      --bg-mantle: #181825;
+      --bg-crust: #1e1e2e;
+      --bg-surface0: #313244;
+      --bg-surface1: #45475a;
+      --text: #cdd6f4;
+      --subtext1: #bac2de;
+      --subtext0: #a6adc8;
+      --overlay2: #9399b2;
+      --overlay1: #7f849c;
+      --overlay0: #6c7086;
+      --blue: #89b4fa;
+      --lavender: #b4befe;
+      --teal: #94e2d5;
+      --green: #a6e3a1;
+      --yellow: #f9e2af;
+      --peach: #fab387;
+      --red: #f38ba8;
+      --canvas-bg: #0f0f17;
+      --node-bg: #1e1e2e;
+      --node-border: #45475a;
+      --blue-glow-sm: rgba(137, 180, 250, 0.15);
+      --radius-sm: 6px;
+      --radius-xs: 4px;
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--canvas-bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #root {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Breadcrumb bar */
+    .breadcrumb-bar {
+      flex-shrink: 0;
+      height: 44px;
+      background: var(--bg-crust);
+      border-bottom: 1px solid var(--node-border);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 0;
+      position: relative;
+      z-index: 10;
+      user-select: none;
+    }
+
+    .back-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--bg-surface0);
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      margin-right: 8px;
+      flex-shrink: 0;
+      transition: background 0.15s ease, transform 0.1s ease, opacity 0.2s ease;
+      outline: none;
+    }
+
+    .back-btn:hover {
+      background: var(--bg-surface1);
+    }
+
+    .back-btn:active {
+      transform: scale(0.92);
+    }
+
+    .back-btn.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .breadcrumb-list {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow: hidden;
+    }
+
+    .crumb-wrapper {
+      display: flex;
+      align-items: center;
+      animation: crumbFadeIn 0.25s ease forwards;
+    }
+
+    @keyframes crumbFadeIn {
+      from {
+        opacity: 0;
+        transform: translateX(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .crumb {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--overlay1);
+      cursor: pointer;
+      padding: 3px 5px;
+      border-radius: var(--radius-xs);
+      transition: color 0.15s ease, background 0.15s ease;
+      white-space: nowrap;
+      border: none;
+      background: transparent;
+      outline: none;
+    }
+
+    .crumb:hover {
+      color: var(--blue);
+      background: var(--blue-glow-sm);
+    }
+
+    .crumb.current {
+      color: var(--text);
+      font-weight: 600;
+      cursor: default;
+    }
+
+    .crumb.current:hover {
+      color: var(--text);
+      background: transparent;
+    }
+
+    .crumb-sep {
+      color: var(--overlay0);
+      font-size: 13px;
+      padding: 0 2px;
+      flex-shrink: 0;
+    }
+
+    /* Status bar (right side) */
+    .breadcrumb-status {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .status-chip {
+      font-size: 11px;
+      color: var(--overlay0);
+      background: var(--bg-surface0);
+      border: 1px solid var(--node-border);
+      border-radius: 20px;
+      padding: 2px 10px;
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+    }
+
+    .status-chip span {
+      color: var(--subtext0);
+    }
+
+    .kbd-hint {
+      font-size: 11px;
+      color: var(--overlay0);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-surface0);
+      border: 1px solid var(--bg-surface1);
+      border-bottom-width: 2px;
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-size: 10px;
+      color: var(--subtext0);
+      font-family: monospace;
+      line-height: 1.4;
+    }
+
+    /* Canvas area */
+    .canvas-area {
+      flex: 1;
+      overflow: auto;
+      padding: 32px 40px;
+      position: relative;
+    }
+
+    .canvas-area::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    .canvas-area::-webkit-scrollbar-track { background: transparent; }
+    .canvas-area::-webkit-scrollbar-thumb {
+      background: var(--bg-surface0);
+      border-radius: 4px;
+    }
+    .canvas-area::-webkit-scrollbar-thumb:hover {
+      background: var(--bg-surface1);
+    }
+
+    /* Level heading */
+    .level-heading {
+      margin-bottom: 24px;
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      animation: fadeSlideUp 0.2s ease forwards;
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .level-heading h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .level-heading .child-count {
+      font-size: 13px;
+      color: var(--overlay0);
+      font-weight: 400;
+    }
+
+    /* Module cards grid */
+    .cards-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      animation: fadeSlideUp 0.25s ease forwards;
+    }
+
+    .module-card {
+      width: 200px;
+      min-height: 100px;
+      background: var(--node-bg);
+      border: 1.5px solid var(--node-border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+      position: relative;
+      outline: none;
+      user-select: none;
+    }
+
+    .module-card:hover {
+      border-color: var(--overlay1);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .module-card.selected {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 2px var(--blue-glow-sm), 0 4px 20px rgba(137, 180, 250, 0.2);
+    }
+
+    .module-card.return-highlight {
+      animation: returnPulse 1.5s ease forwards;
+    }
+
+    @keyframes returnPulse {
+      0%   { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(148, 226, 213, 0.3); }
+      50%  { border-color: var(--teal); box-shadow: 0 0 0 6px rgba(148, 226, 213, 0.12); }
+      100% { border-color: var(--node-border); box-shadow: none; }
+    }
+
+    .module-card:active {
+      transform: translateY(0);
+    }
+
+    .module-card .card-icon {
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .module-card .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+      word-break: break-word;
+    }
+
+    .module-card .card-subtitle {
+      font-size: 11px;
+      color: var(--overlay0);
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .module-card .card-subtitle .dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--overlay0);
+      flex-shrink: 0;
+    }
+
+    .module-card .drill-hint {
+      position: absolute;
+      bottom: 8px;
+      right: 10px;
+      font-size: 10px;
+      color: var(--overlay0);
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    .module-card:hover .drill-hint {
+      opacity: 1;
+    }
+
+    /* Leaf node (no children) */
+    .module-card.leaf-node {
+      opacity: 0.75;
+    }
+
+    .module-card.leaf-node .card-subtitle {
+      color: var(--overlay0);
+    }
+
+    /* Empty state */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 200px;
+      gap: 10px;
+      color: var(--overlay0);
+      animation: fadeSlideUp 0.2s ease forwards;
+    }
+
+    .empty-state .empty-icon {
+      font-size: 32px;
+      opacity: 0.4;
+    }
+
+    .empty-state p {
+      font-size: 13px;
+    }
+
+    /* Action strip at bottom */
+    .action-strip {
+      flex-shrink: 0;
+      height: 36px;
+      background: var(--bg-mantle);
+      border-top: 1px solid var(--node-border);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 12px;
+    }
+
+    .action-strip-label {
+      font-size: 11px;
+      color: var(--overlay0);
+    }
+
+    .action-strip-sep {
+      width: 1px;
+      height: 16px;
+      background: var(--node-border);
+    }
+
+    .action-note {
+      font-size: 11px;
+      color: var(--overlay1);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useCallback, useRef } = React;
+
+    // ── Mock module tree ──────────────────────────────────────────────────────
+    const MODULE_TREE = {
+      id: "root",
+      name: "ArchUI",
+      icon: "◈",
+      children: [
+        {
+          id: "gui",
+          name: "GUI",
+          icon: "⬡",
+          children: [
+            {
+              id: "gui-canvas",
+              name: "Canvas",
+              icon: "▣",
+              children: [
+                { id: "gui-canvas-page",   name: "CanvasPage",   icon: "◻", children: [] },
+                { id: "gui-canvas-mnode",  name: "ModuleNode",   icon: "◻", children: [] },
+              ],
+            },
+            {
+              id: "gui-components",
+              name: "Components",
+              icon: "⬡",
+              children: [
+                { id: "gui-comp-primary",  name: "PrimaryModuleCard", icon: "◻", children: [] },
+                { id: "gui-comp-detail",   name: "DetailPanel",       icon: "◻", children: [] },
+                { id: "gui-comp-nav",      name: "Navigation",        icon: "◻", children: [] },
+              ],
+            },
+            {
+              id: "gui-screens",
+              name: "Screens",
+              icon: "▣",
+              children: [],
+            },
+          ],
+        },
+        {
+          id: "cli",
+          name: "CLI",
+          icon: "⬡",
+          children: [
+            { id: "cli-validate", name: "Validate Command", icon: "◻", children: [] },
+            { id: "cli-import",   name: "Import Command",   icon: "◻", children: [] },
+          ],
+        },
+        {
+          id: "core",
+          name: "Core",
+          icon: "⬡",
+          children: [
+            { id: "core-uuid", name: "UUID System",  icon: "◻", children: [] },
+            { id: "core-fs",   name: "Filesystem",   icon: "◻", children: [] },
+          ],
+        },
+      ],
+    };
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+    function getNodeByPath(tree, path) {
+      // path: array of node ids starting after root (root is always the base)
+      let node = tree;
+      for (const id of path) {
+        const found = node.children && node.children.find(c => c.id === id);
+        if (!found) return null;
+        node = found;
+      }
+      return node;
+    }
+
+    function pathToDisplayNames(tree, path) {
+      // Returns [{id, name}] for root + each step in path
+      const crumbs = [{ id: "root", name: tree.name }];
+      let node = tree;
+      for (const id of path) {
+        const found = node.children && node.children.find(c => c.id === id);
+        if (!found) break;
+        node = found;
+        crumbs.push({ id: node.id, name: node.name });
+      }
+      return crumbs;
+    }
+
+    function pathToSlug(path) {
+      // e.g. ["gui","components"] → "/gui/components"
+      if (path.length === 0) return "/";
+      return "/" + path.join("/");
+    }
+
+    // ── BackButton ────────────────────────────────────────────────────────────
+    function BackButton({ visible, onClick }) {
+      return (
+        <button
+          className={`back-btn${visible ? "" : " hidden"}`}
+          onClick={onClick}
+          aria-label="Go back"
+          tabIndex={visible ? 0 : -1}
+        >
+          ←
+        </button>
+      );
+    }
+
+    // ── BreadcrumbBar ─────────────────────────────────────────────────────────
+    function BreadcrumbBar({ crumbs, depth, path, onCrumbClick, onBack }) {
+      const atRoot = depth === 0;
+      return (
+        <div className="breadcrumb-bar">
+          <BackButton visible={!atRoot} onClick={onBack} />
+
+          <nav className="breadcrumb-list" aria-label="Navigation breadcrumb">
+            {crumbs.map((crumb, i) => {
+              const isLast = i === crumbs.length - 1;
+              const isCurrent = isLast;
+              return (
+                <span key={crumb.id + "-" + i} className="crumb-wrapper">
+                  {i > 0 && <span className="crumb-sep" aria-hidden="true">›</span>}
+                  <button
+                    className={`crumb${isCurrent ? " current" : ""}`}
+                    onClick={() => !isCurrent && onCrumbClick(i)}
+                    tabIndex={isCurrent ? -1 : 0}
+                    aria-current={isCurrent ? "page" : undefined}
+                  >
+                    {crumb.name}
+                  </button>
+                </span>
+              );
+            })}
+          </nav>
+
+          <div className="breadcrumb-status">
+            <span className="kbd-hint">
+              <span className="kbd">Esc</span>
+              <span className="kbd">⌫</span>
+              back
+            </span>
+            <span className="status-chip">
+              Depth: <span>{depth}</span>
+              {" "}·{" "}
+              Path: <span>{pathToSlug(path)}</span>
+            </span>
+          </div>
+        </div>
+      );
+    }
+
+    // ── ModuleCard ────────────────────────────────────────────────────────────
+    function ModuleCard({ module, selected, returnHighlight, onSelect, onDrillIn }) {
+      const hasChildren = module.children && module.children.length > 0;
+      const clickTimer = useRef(null);
+
+      function handleClick() {
+        // Single click: select
+        onSelect(module.id);
+        // On double-click we drill in; we use a timer to distinguish
+      }
+
+      function handleDoubleClick(e) {
+        e.preventDefault();
+        if (hasChildren) {
+          onDrillIn(module.id);
+        }
+      }
+
+      return (
+        <div
+          className={[
+            "module-card",
+            selected ? "selected" : "",
+            returnHighlight ? "return-highlight" : "",
+            !hasChildren ? "leaf-node" : "",
+          ].filter(Boolean).join(" ")}
+          role="button"
+          tabIndex={0}
+          aria-label={module.name}
+          onClick={handleClick}
+          onDoubleClick={handleDoubleClick}
+          onKeyDown={e => {
+            if (e.key === "Enter" && hasChildren) onDrillIn(module.id);
+            if (e.key === " ") { e.preventDefault(); onSelect(module.id); }
+          }}
+        >
+          <div className="card-icon">{module.icon}</div>
+          <div className="card-title">{module.name}</div>
+          <div className="card-subtitle">
+            <span className="dot"></span>
+            {hasChildren
+              ? `${module.children.length} submodule${module.children.length !== 1 ? "s" : ""}`
+              : "leaf module"}
+          </div>
+          {hasChildren && (
+            <span className="drill-hint" aria-hidden="true">dbl-click ↗</span>
+          )}
+        </div>
+      );
+    }
+
+    // ── CanvasArea ────────────────────────────────────────────────────────────
+    function CanvasArea({ currentNode, selectedId, returnHighlightId, onSelect, onDrillIn }) {
+      const children = currentNode.children || [];
+      return (
+        <div className="canvas-area">
+          <div className="level-heading">
+            <h2>{currentNode.name}</h2>
+            <span className="child-count">
+              {children.length > 0
+                ? `${children.length} submodule${children.length !== 1 ? "s" : ""}`
+                : "leaf module"}
+            </span>
+          </div>
+
+          {children.length > 0 ? (
+            <div className="cards-grid">
+              {children.map(child => (
+                <ModuleCard
+                  key={child.id}
+                  module={child}
+                  selected={selectedId === child.id}
+                  returnHighlight={returnHighlightId === child.id}
+                  onSelect={onSelect}
+                  onDrillIn={onDrillIn}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="empty-state">
+              <div className="empty-icon">◻</div>
+              <p>This is a leaf module — no submodules to display.</p>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ── ActionStrip ───────────────────────────────────────────────────────────
+    function ActionStrip({ hint }) {
+      return (
+        <div className="action-strip">
+          <span className="action-strip-label">Single-click to select  ·  Double-click to drill in</span>
+          <div className="action-strip-sep" />
+          {hint && <span className="action-note">{hint}</span>}
+        </div>
+      );
+    }
+
+    // ── App ───────────────────────────────────────────────────────────────────
+    function App() {
+      // navStack: array of node ids (empty = at root)
+      const [navStack, setNavStack] = useState([]);
+      // selectedId: currently highlighted card
+      const [selectedId, setSelectedId] = useState(null);
+      // returnHighlightId: card to pulse on back-nav
+      const [returnHighlightId, setReturnHighlightId] = useState(null);
+      // hint message
+      const [hint, setHint] = useState(null);
+
+      const currentNode = getNodeByPath(MODULE_TREE, navStack);
+      const crumbs = pathToDisplayNames(MODULE_TREE, navStack);
+      const depth = navStack.length;
+
+      // Drill into a child node
+      const drillIn = useCallback((childId) => {
+        setNavStack(prev => [...prev, childId]);
+        setSelectedId(null);
+        setReturnHighlightId(null);
+        setHint(null);
+      }, []);
+
+      // Go back one level
+      const goBack = useCallback(() => {
+        if (navStack.length === 0) return;
+        const returningTo = navStack[navStack.length - 1];
+        setNavStack(prev => prev.slice(0, -1));
+        setSelectedId(null);
+        // highlight the card we just left
+        setReturnHighlightId(returningTo);
+        setHint(`Returned from "${currentNode ? currentNode.name : ""}"`);
+        // clear pulse after 1.5s + small buffer
+        setTimeout(() => setReturnHighlightId(null), 1700);
+        setTimeout(() => setHint(null), 3000);
+      }, [navStack, currentNode]);
+
+      // Navigate to a specific crumb depth
+      const goToCrumb = useCallback((crumbIndex) => {
+        // crumbIndex 0 = root, so navStack should be empty
+        const newStack = navStack.slice(0, crumbIndex);
+        const returningTo = navStack[crumbIndex] || null;
+        setNavStack(newStack);
+        setSelectedId(null);
+        if (returningTo) {
+          setReturnHighlightId(returningTo);
+          setTimeout(() => setReturnHighlightId(null), 1700);
+        }
+        setHint(null);
+      }, [navStack]);
+
+      // Keyboard shortcuts
+      useEffect(() => {
+        function handleKey(e) {
+          if (e.key === "Backspace" || e.key === "Escape") {
+            // Don't intercept if user is typing in an input
+            if (document.activeElement && (
+              document.activeElement.tagName === "INPUT" ||
+              document.activeElement.tagName === "TEXTAREA"
+            )) return;
+            e.preventDefault();
+            goBack();
+          }
+        }
+        window.addEventListener("keydown", handleKey);
+        return () => window.removeEventListener("keydown", handleKey);
+      }, [goBack]);
+
+      return (
+        <>
+          <BreadcrumbBar
+            crumbs={crumbs}
+            depth={depth}
+            path={navStack}
+            onCrumbClick={goToCrumb}
+            onBack={goBack}
+          />
+          <CanvasArea
+            key={navStack.join("/")}
+            currentNode={currentNode}
+            selectedId={selectedId}
+            returnHighlightId={returnHighlightId}
+            onSelect={setSelectedId}
+            onDrillIn={drillIn}
+          />
+          <ActionStrip hint={hint} />
+        </>
+      );
+    }
+
+    // ── Mount ─────────────────────────────────────────────────────────────────
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</body>
+</html>

@@ -1,9 +1,8 @@
 schema_version: 1
 uuid: cd7d3790
+submodules:
+  schema-harness: aa000020
 links:
-  - uuid: 1d3c7a9e
-    relation: extends
-    description: Formal Zod encoding of the README frontmatter rules defined in readme-schema
   - uuid: 8b2e4f6d
     relation: extends
     description: Formal Zod encoding of the link system rules defined in link-system

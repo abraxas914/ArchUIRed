@@ -43,7 +43,7 @@ When a task requires a different specialist agent, the current agent produces a 
 
 The receiving agent reads this artifact as part of its initialization, before reading the git log. It gives the new agent a targeted starting point rather than requiring it to reconstruct context from scratch.
 
-**Example:** An iOS agent modifies `ios-development-release/` and discovers that a change also requires updating `core/readme-schema`. It cannot make that change itself (outside its scope). It commits its iOS work, writes a handoff artifact naming `core/readme-schema` (uuid: `1d3c7a9e`) as the next target, and signals completion. An architect agent picks up the handoff, reads the artifact, loads `core/readme-schema`, and applies the cross-cutting change.
+**Example:** An iOS agent modifies `ios-development-release/` and discovers that a change also requires updating `core/schema`. It cannot make that change itself (outside its scope). It commits its iOS work, writes a handoff artifact naming `core/schema` (uuid: `cd7d3790`) as the next target, and signals completion. An architect agent picks up the handoff, reads the artifact, loads `core/schema`, and applies the cross-cutting change.
 
 ### Cross-Platform Changes
 

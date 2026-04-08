@@ -3,7 +3,7 @@ uuid: 7c1d9e3f
 submodules:
   agent-context-harness: ee000002
 links:
-  - uuid: 1d3c7a9e
+  - uuid: cd7d3790
     relation: depends-on
-    description: The README schema defines the frontmatter fields (especially
+    description: The schema defines the frontmatter fields (especially
       `description`) that this contract relies on for cheap context loading.

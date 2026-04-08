@@ -13,11 +13,11 @@ links:
     relation: references
     description: All React components must use tokens, spacing, and typography from
       gui/design-system to ensure visual consistency with the ArchUI spec.
-  - uuid: 1d3c7a9e
+  - uuid: cd7d3790
     relation: references
-    description: The README schema (frontmatter fields, link structure) drives what
+    description: The schema (frontmatter fields, link structure) drives what
       the canvas renders — the web app parses and displays exactly the fields
-      defined in core/readme-schema.
+      defined in core/schema.
   - uuid: f4b7c2a9
     relation: depends-on
     description: In production server-hosted mode, the React app communicates with

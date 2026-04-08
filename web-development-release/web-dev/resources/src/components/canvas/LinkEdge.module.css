@@ -1,7 +1,7 @@
 .label {
   background: var(--bg-surface0);
   border: 1px solid var(--bg-surface1);
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   padding: 2px 6px;
   font-size: 0.65rem;
   color: var(--overlay1);

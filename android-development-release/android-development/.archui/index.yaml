@@ -11,7 +11,7 @@ links:
     relation: references
     description: Pulls design tokens (color, typography, spacing) from the
       design-system module via Figma MCP to drive MaterialTheme configuration.
-  - uuid: 1d3c7a9e
+  - uuid: cd7d3790
     relation: references
-    description: Reads the README schema to know how to parse YAML frontmatter and
+    description: Reads the schema to know how to parse YAML frontmatter and
       body from any module's README.md encountered at runtime.

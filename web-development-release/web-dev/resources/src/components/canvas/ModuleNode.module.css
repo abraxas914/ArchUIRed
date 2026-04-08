@@ -12,12 +12,12 @@
 
 .node:hover {
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(137, 180, 250, .15);
+  box-shadow: 0 0 0 3px var(--blue-glow-sm);
 }
 
 .nodeSelected {
   border-color: var(--node-selected) !important;
-  box-shadow: 0 0 0 3px rgba(137, 180, 250, .25) !important;
+  box-shadow: 0 0 0 3px var(--blue-glow-md) !important;
 }
 
 .name {
@@ -47,7 +47,7 @@
   margin-top: 6px;
   padding: 2px 6px;
   background: var(--bg-surface0);
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   font-size: 0.65rem;
   color: var(--overlay1);
 }

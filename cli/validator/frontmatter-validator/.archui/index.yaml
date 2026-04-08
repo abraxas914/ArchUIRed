@@ -3,7 +3,7 @@ uuid: 6a4d8f2c
 submodules:
   frontmatter-validator-harness: cc000004
 links:
-  - uuid: 1d3c7a9e
+  - uuid: cd7d3790
     relation: depends-on
     description: The required fields, their types, and their semantics are defined
-      in core/readme-schema.
+      in core/schema.

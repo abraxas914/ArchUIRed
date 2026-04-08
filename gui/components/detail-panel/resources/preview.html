@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Detail Panel — ArchUI Component Preview</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-base: #11111b;
+      --bg-mantle: #181825;
+      --bg-crust: #1e1e2e;
+      --bg-surface0: #313244;
+      --bg-surface1: #45475a;
+      --text: #cdd6f4;
+      --subtext1: #bac2de;
+      --subtext0: #a6adc8;
+      --overlay2: #9399b2;
+      --overlay1: #7f849c;
+      --overlay0: #6c7086;
+      --blue: #89b4fa;
+      --lavender: #b4befe;
+      --teal: #94e2d5;
+      --green: #a6e3a1;
+      --yellow: #f9e2af;
+      --peach: #fab387;
+      --red: #f38ba8;
+      --canvas-bg: #0f0f17;
+      --node-bg: #1e1e2e;
+      --node-border: #45475a;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+      --radius-xs: 4px;
+      --shadow-md: 0 8px 24px rgba(0,0,0,.5);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--canvas-bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    #root {
+      height: 100%;
+    }
+
+    @keyframes ripple {
+      0%   { opacity: 0.5; transform: scale(0); }
+      100% { opacity: 0;   transform: scale(2.5); }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useRef, useCallback } = React;
+
+    /* ─── accent palette ─────────────────────────────────────────────── */
+    const ACCENTS = ['#89b4fa','#b4befe','#94e2d5','#a6e3a1','#f9e2af','#fab387','#f38ba8'];
+
+    /* ─── relation color map ─────────────────────────────────────────── */
+    const RELATION_COLOR = {
+      'depends-on':  'var(--blue)',
+      'implements':  'var(--green)',
+      'extends':     'var(--lavender)',
+      'references':  'var(--overlay1)',
+      'related-to':  'var(--overlay0)',
+    };
+
+    /* ─── mock data ──────────────────────────────────────────────────── */
+    const MODULES = {
+      GUI: {
+        accentIndex: 0,
+        uuid: 'a3f9c201',
+        name: 'GUI',
+        description: 'Cross-platform visual canvas for navigating the ArchUI knowledge base as an interactive node graph.',
+        submodules: [
+          { name: 'Canvas',     description: 'Infinite panning canvas with ReactFlow' },
+          { name: 'Components', description: 'Reusable UI building blocks' },
+          { name: 'Screens',    description: 'Assembled screen layouts' },
+        ],
+        linksTo: [
+          { relation: 'implements', name: 'Design System' },
+          { relation: 'depends-on', name: 'Core', description: 'Requires the core module index' },
+        ],
+        linkedBy: [
+          { relation: 'references', name: 'CLI' },
+        ],
+      },
+      CLI: {
+        accentIndex: 5,
+        uuid: 'b8e2d415',
+        name: 'CLI',
+        description: 'Validator that checks filesystem conformance after agent modifications.',
+        submodules: [
+          { name: 'Validate Command', description: 'Runs structural checks' },
+          { name: 'Import Command',   description: 'Scaffolds new modules' },
+        ],
+        linksTo: [
+          { relation: 'depends-on', name: 'Core' },
+        ],
+        linkedBy: [
+          { relation: 'related-to', name: 'GUI' },
+          { relation: 'extends',    name: 'Agent Orchestration' },
+        ],
+      },
+      Canvas: {
+        accentIndex: 2,
+        uuid: 'c7a0b831',
+        name: 'Canvas',
+        description: 'Infinite panning canvas built on ReactFlow — renders the module graph and handles navigation drill-down.',
+        submodules: [],
+        linksTo: [
+          { relation: 'extends',    name: 'ReactFlow' },
+          { relation: 'depends-on', name: 'Navigation' },
+        ],
+        linkedBy: [
+          { relation: 'implements', name: 'GUI' },
+        ],
+      },
+    };
+
+    /* ─── mock node cards shown on the canvas background ─────────────── */
+    const MOCK_NODES = [
+      { id: 1, label: 'GUI',              x: 60,  y: 120, accentIndex: 0 },
+      { id: 2, label: 'CLI',              x: 220, y: 80,  accentIndex: 5 },
+      { id: 3, label: 'Canvas',           x: 80,  y: 260, accentIndex: 2 },
+      { id: 4, label: 'Core',             x: 300, y: 210, accentIndex: 3 },
+      { id: 5, label: 'Design System',    x: 180, y: 360, accentIndex: 1 },
+      { id: 6, label: 'Agent Orch.',      x: 430, y: 140, accentIndex: 6 },
+      { id: 7, label: 'Navigation',       x: 390, y: 310, accentIndex: 4 },
+    ];
+
+    /* ─── ripple hook ────────────────────────────────────────────────── */
+    function useRipple() {
+      const [ripples, setRipples] = useState([]);
+
+      const trigger = useCallback((e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const id = Date.now() + Math.random();
+        setRipples(r => [...r, { id, x, y }]);
+        setTimeout(() => setRipples(r => r.filter(rp => rp.id !== id)), 600);
+      }, []);
+
+      return [ripples, trigger];
+    }
+
+    /* ─── RelationPill ───────────────────────────────────────────────── */
+    function RelationPill({ relation }) {
+      const color = RELATION_COLOR[relation] || 'var(--overlay0)';
+      return (
+        <span style={{
+          display: 'inline-block',
+          fontSize: 10,
+          fontWeight: 600,
+          letterSpacing: '0.04em',
+          padding: '2px 7px',
+          borderRadius: 99,
+          background: 'var(--bg-surface0)',
+          color,
+          border: `1px solid ${color}33`,
+          whiteSpace: 'nowrap',
+          flexShrink: 0,
+          lineHeight: '16px',
+        }}>
+          {relation}
+        </span>
+      );
+    }
+
+    /* ─── ClickRow (submodule / link row) ───────────────────────────── */
+    function ClickRow({ children, tooltip }) {
+      const [hovered, setHovered] = useState(false);
+      const [ripples, triggerRipple] = useRipple();
+      const [showTip, setShowTip] = useState(false);
+      const tipTimer = useRef(null);
+
+      const handleEnter = () => {
+        setHovered(true);
+        tipTimer.current = setTimeout(() => setShowTip(true), 350);
+      };
+      const handleLeave = () => {
+        setHovered(false);
+        clearTimeout(tipTimer.current);
+        setShowTip(false);
+      };
+
+      return (
+        <div
+          onClick={triggerRipple}
+          onMouseEnter={handleEnter}
+          onMouseLeave={handleLeave}
+          style={{
+            position: 'relative',
+            padding: '8px 8px',
+            borderRadius: 'var(--radius-xs)',
+            background: hovered ? 'var(--bg-surface0)' : 'transparent',
+            cursor: 'pointer',
+            transition: 'background 150ms ease',
+            overflow: 'hidden',
+            userSelect: 'none',
+          }}
+        >
+          {ripples.map(rp => (
+            <span
+              key={rp.id}
+              style={{
+                position: 'absolute',
+                left: rp.x,
+                top: rp.y,
+                width: 80,
+                height: 80,
+                borderRadius: '50%',
+                background: 'rgba(205,214,244,0.15)',
+                transform: 'translate(-50%,-50%) scale(0)',
+                animation: 'ripple 0.55s ease-out forwards',
+                pointerEvents: 'none',
+              }}
+            />
+          ))}
+          {children}
+          {tooltip && showTip && (
+            <div style={{
+              position: 'absolute',
+              left: 8,
+              bottom: 'calc(100% + 4px)',
+              background: 'var(--bg-surface1)',
+              color: 'var(--subtext1)',
+              fontSize: 11,
+              padding: '5px 9px',
+              borderRadius: 'var(--radius-xs)',
+              boxShadow: 'var(--shadow-md)',
+              whiteSpace: 'nowrap',
+              zIndex: 100,
+              pointerEvents: 'none',
+              border: '1px solid var(--node-border)',
+            }}>
+              {tooltip}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    /* ─── Separator ─────────────────────────────────────────────────── */
+    function Sep() {
+      return (
+        <div style={{
+          borderTop: '1px solid var(--node-border)',
+          margin: '16px 0 12px',
+        }} />
+      );
+    }
+
+    /* ─── SectionHeader ─────────────────────────────────────────────── */
+    function SectionHeader({ label, count }) {
+      return (
+        <div style={{
+          fontSize: 11,
+          fontWeight: 600,
+          letterSpacing: '0.08em',
+          color: 'var(--overlay0)',
+          textTransform: 'uppercase',
+          marginBottom: 6,
+        }}>
+          {label}{count !== undefined ? ` (${count})` : ''}
+        </div>
+      );
+    }
+
+    /* ─── DetailPanel ────────────────────────────────────────────────── */
+    function DetailPanel({ module: mod, visible, onClose }) {
+      const accent = ACCENTS[mod.accentIndex];
+
+      return (
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          width: 320,
+          height: '100%',
+          background: 'var(--node-bg)',
+          borderLeft: '1px solid var(--node-border)',
+          display: 'flex',
+          flexDirection: 'column',
+          transform: visible ? 'translateX(0)' : 'translateX(100%)',
+          transition: 'transform 200ms ease-out',
+          boxShadow: visible ? '-8px 0 32px rgba(0,0,0,0.45)' : 'none',
+          zIndex: 20,
+          overflowY: 'auto',
+          overflowX: 'hidden',
+        }}>
+          {/* ── header ── */}
+          <div style={{ padding: '24px 20px 0', flexShrink: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
+              <h1 style={{
+                fontSize: 24,
+                fontWeight: 700,
+                color: accent,
+                lineHeight: 1.2,
+                letterSpacing: '-0.01em',
+              }}>
+                {mod.name}
+              </h1>
+              <button
+                onClick={onClose}
+                aria-label="Close panel"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--overlay1)',
+                  fontSize: 20,
+                  lineHeight: 1,
+                  cursor: 'pointer',
+                  padding: '2px 4px',
+                  borderRadius: 'var(--radius-xs)',
+                  transition: 'color 150ms',
+                  flexShrink: 0,
+                  marginTop: 2,
+                }}
+                onMouseEnter={e => e.currentTarget.style.color = 'var(--text)'}
+                onMouseLeave={e => e.currentTarget.style.color = 'var(--overlay1)'}
+              >
+                ×
+              </button>
+            </div>
+
+            <div style={{
+              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+              fontSize: 11,
+              color: 'var(--text)',
+              opacity: 0.45,
+              marginTop: 4,
+              letterSpacing: '0.02em',
+            }}>
+              {mod.uuid}
+            </div>
+
+            <p style={{
+              fontSize: 13,
+              color: 'var(--subtext0)',
+              marginTop: 8,
+              lineHeight: 1.6,
+            }}>
+              {mod.description}
+            </p>
+          </div>
+
+          {/* ── body ── */}
+          <div style={{ padding: '0 20px 32px', flexShrink: 0 }}>
+
+            {/* submodules */}
+            {mod.submodules.length > 0 && (
+              <>
+                <Sep />
+                <SectionHeader label="Submodules" count={mod.submodules.length} />
+                {mod.submodules.map((sub, i) => (
+                  <ClickRow key={i} tooltip={sub.description}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ color: 'var(--overlay1)', fontSize: 13, lineHeight: 1 }}>›</span>
+                      <span style={{ fontSize: 13, color: 'var(--text)', lineHeight: 1.4 }}>{sub.name}</span>
+                    </div>
+                  </ClickRow>
+                ))}
+              </>
+            )}
+
+            {/* links to */}
+            {mod.linksTo.length > 0 && (
+              <>
+                <Sep />
+                <SectionHeader label="Link To" count={mod.linksTo.length} />
+                {mod.linksTo.map((link, i) => (
+                  <ClickRow key={i}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                      <RelationPill relation={link.relation} />
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ fontSize: 13, color: 'var(--text)', lineHeight: 1.4 }}>{link.name}</div>
+                        {link.description && (
+                          <div style={{ fontSize: 11, color: 'var(--overlay1)', marginTop: 2, lineHeight: 1.4 }}>
+                            {link.description}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </ClickRow>
+                ))}
+              </>
+            )}
+
+            {/* linked by */}
+            {mod.linkedBy.length > 0 && (
+              <>
+                <Sep />
+                <SectionHeader label="Linked By" count={mod.linkedBy.length} />
+                {mod.linkedBy.map((link, i) => (
+                  <ClickRow key={i}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                      <RelationPill relation={link.relation} />
+                      <div style={{ fontSize: 13, color: 'var(--text)', lineHeight: 1.4 }}>{link.name}</div>
+                    </div>
+                  </ClickRow>
+                ))}
+              </>
+            )}
+
+            {/* empty state */}
+            {mod.submodules.length === 0 && mod.linksTo.length === 0 && mod.linkedBy.length === 0 && (
+              <>
+                <Sep />
+                <div style={{ fontSize: 13, color: 'var(--overlay0)', textAlign: 'center', paddingTop: 16 }}>
+                  No connections yet.
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    /* ─── MockNodeCard ───────────────────────────────────────────────── */
+    function MockNodeCard({ node, isSelected, onClick }) {
+      const [hovered, setHovered] = useState(false);
+      const accent = ACCENTS[node.accentIndex];
+      const active = isSelected || hovered;
+
+      return (
+        <div
+          onClick={onClick}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          style={{
+            position: 'absolute',
+            left: node.x,
+            top: node.y,
+            minWidth: 110,
+            padding: '10px 14px',
+            background: 'var(--node-bg)',
+            border: `1px solid ${isSelected ? accent : active ? 'var(--bg-surface1)' : 'var(--node-border)'}`,
+            borderRadius: 'var(--radius-md)',
+            boxShadow: isSelected ? `0 0 0 2px ${accent}44, var(--shadow-md)` : active ? 'var(--shadow-md)' : 'none',
+            cursor: 'pointer',
+            transition: 'border-color 150ms, box-shadow 150ms',
+            userSelect: 'none',
+          }}
+        >
+          <div style={{
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: '0.04em',
+            color: accent,
+            textTransform: 'uppercase',
+            marginBottom: 2,
+          }}>
+            {node.label}
+          </div>
+          <div style={{ fontSize: 10, color: 'var(--overlay0)' }}>module</div>
+        </div>
+      );
+    }
+
+    /* ─── ToolbarButton ─────────────────────────────────────────────── */
+    function ToolbarButton({ label, accentIndex, active, onClick }) {
+      const [hovered, setHovered] = useState(false);
+      const accent = ACCENTS[accentIndex];
+      return (
+        <button
+          onClick={onClick}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          style={{
+            background: active ? `${accent}22` : hovered ? 'var(--bg-surface0)' : 'var(--bg-mantle)',
+            border: `1px solid ${active ? accent : 'var(--node-border)'}`,
+            color: active ? accent : hovered ? 'var(--text)' : 'var(--subtext0)',
+            fontSize: 12,
+            fontWeight: 600,
+            padding: '6px 14px',
+            borderRadius: 'var(--radius-sm)',
+            cursor: 'pointer',
+            transition: 'all 150ms ease',
+            letterSpacing: '0.02em',
+          }}
+        >
+          {label}
+        </button>
+      );
+    }
+
+    /* ─── App ────────────────────────────────────────────────────────── */
+    function App() {
+      const [selectedKey, setSelectedKey] = useState('GUI');
+      const [panelVisible, setPanelVisible] = useState(true);
+      const mod = MODULES[selectedKey];
+
+      const handleSelectModule = (key) => {
+        setSelectedKey(key);
+        setPanelVisible(true);
+      };
+
+      return (
+        <div style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden' }}>
+
+          {/* ── canvas background grid ── */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage:
+              'radial-gradient(circle, #313244 1px, transparent 1px)',
+            backgroundSize: '28px 28px',
+            opacity: 0.35,
+            pointerEvents: 'none',
+          }} />
+
+          {/* ── mock nodes ── */}
+          <div style={{ position: 'absolute', inset: 0 }}>
+            {MOCK_NODES.map(node => (
+              <MockNodeCard
+                key={node.id}
+                node={node}
+                isSelected={panelVisible && selectedKey === node.label}
+                onClick={() => handleSelectModule(node.label in MODULES ? node.label : selectedKey)}
+              />
+            ))}
+          </div>
+
+          {/* ── toolbar ── */}
+          <div style={{
+            position: 'absolute',
+            top: 20,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            display: 'flex',
+            gap: 8,
+            background: 'var(--bg-mantle)',
+            border: '1px solid var(--node-border)',
+            borderRadius: 'var(--radius-md)',
+            padding: '8px 12px',
+            boxShadow: 'var(--shadow-md)',
+            zIndex: 30,
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+          }}>
+            <span style={{ fontSize: 11, color: 'var(--overlay0)', marginRight: 4, letterSpacing: '0.04em', fontWeight: 600, textTransform: 'uppercase' }}>
+              Select
+            </span>
+            {Object.entries(MODULES).map(([key, m]) => (
+              <ToolbarButton
+                key={key}
+                label={key}
+                accentIndex={m.accentIndex}
+                active={selectedKey === key && panelVisible}
+                onClick={() => handleSelectModule(key)}
+              />
+            ))}
+            <div style={{ width: 1, height: 20, background: 'var(--node-border)', margin: '0 4px' }} />
+            <ToolbarButton
+              label={panelVisible ? 'Hide Panel' : 'Show Panel'}
+              accentIndex={4}
+              active={false}
+              onClick={() => setPanelVisible(v => !v)}
+            />
+          </div>
+
+          {/* ── watermark label ── */}
+          <div style={{
+            position: 'absolute',
+            bottom: 20,
+            left: 20,
+            fontSize: 11,
+            color: 'var(--overlay0)',
+            letterSpacing: '0.06em',
+            userSelect: 'none',
+          }}>
+            ArchUI · Detail Panel Preview
+          </div>
+
+          {/* ── detail panel ── */}
+          <DetailPanel
+            module={mod}
+            visible={panelVisible}
+            onClose={() => setPanelVisible(false)}
+          />
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>

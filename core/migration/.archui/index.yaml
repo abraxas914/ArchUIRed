@@ -5,10 +5,10 @@ submodules:
   runbooks: ab000002
   migration-harness: aa000009
 links:
-  - uuid: 1d3c7a9e
+  - uuid: cd7d3790
     relation: depends-on
     description: Migrations operate on README.md frontmatter fields defined by the
-      readme-schema module.
+      schema module.
   - uuid: 9e2b5d7c
     relation: depends-on
     description: Migrations must respect and may update filesystem layout rules

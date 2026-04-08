@@ -1,0 +1,6 @@
+schema_version: 1
+uuid: aa000020
+links:
+  - uuid: cd7d3790
+    relation: implements
+    description: Tests the identity document schema rules defined in schema.

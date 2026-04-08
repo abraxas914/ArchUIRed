@@ -1,0 +1,6 @@
+schema_version: 1
+uuid: bc99257e
+links:
+  - uuid: "8250301b"
+    relation: related-to
+    description: Parent agent-config module that orchestrates template consumption

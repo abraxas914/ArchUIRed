@@ -11,7 +11,7 @@ links:
     relation: references
     description: All visual decisions (typography, color, spacing, component shapes)
       are sourced from gui/design-system via Figma MCP.
-  - uuid: 1d3c7a9e
+  - uuid: cd7d3790
     relation: references
     description: iOS agents read README.md frontmatter (uuid, name, description) to
       hydrate module nodes in the canvas view.

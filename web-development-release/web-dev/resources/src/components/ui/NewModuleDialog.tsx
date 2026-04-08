@@ -37,7 +37,7 @@ export function NewModuleDialog({ onConfirm, onCancel }: Props) {
             autoFocus
             placeholder="e.g. Auth Service"
           />
-          {name && <div style={{ fontSize: '0.7rem', color: '#6c7086', marginTop: 2 }}>folder: {folderName || '—'}</div>}
+          {name && <div style={{ fontSize: '0.7rem', color: 'var(--overlay0)', marginTop: 2 }}>folder: {folderName || '—'}</div>}
           {error && <div className={s.error}>{error}</div>}
         </div>
         <div className={s.field}>
