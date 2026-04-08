@@ -1,0 +1,9 @@
+schema_version: 1
+uuid: 032d5b9c
+links:
+  - uuid: 7a1e5b8d
+    relation: related-to
+    description: Snapshots are captured from the web-dev React app running in a headless browser.
+  - uuid: d6b68f01
+    relation: implements
+    description: Implements the visual regression layer of the design-system harness.

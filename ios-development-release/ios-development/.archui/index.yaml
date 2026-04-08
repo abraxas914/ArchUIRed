@@ -15,7 +15,3 @@ links:
     relation: references
     description: iOS agents read README.md frontmatter (uuid, name, description) to
       hydrate module nodes in the canvas view.
-layout:
-  8c5f2a6d:
-    x: "680.0059742564833"
-    y: "45.333067810822975"

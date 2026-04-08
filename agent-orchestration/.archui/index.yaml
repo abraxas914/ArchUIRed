@@ -14,7 +14,3 @@ links:
     relation: related-to
     description: The CLI is the primary entry point for launching and configuring
       agent sessions.
-layout:
-  7c1d9e3f:
-    x: "-53.98123365538813"
-    y: "35.443334014905396"

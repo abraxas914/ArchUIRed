@@ -1,0 +1,6 @@
+schema_version: 1
+uuid: 9e10465a
+links:
+  - uuid: 5a578ab2
+    relation: implements
+    description: partial mode implements the partial compliance levels defined in core/adoption/partial-compliance

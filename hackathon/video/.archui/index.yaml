@@ -8,4 +8,3 @@ links:
   - uuid: aa100006
     relation: depends-on
     description: 视频脚本内容来源于 project-packaging 的问题陈述和竞品分析
-layout: {}

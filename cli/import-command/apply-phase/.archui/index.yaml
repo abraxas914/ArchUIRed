@@ -1,0 +1,6 @@
+schema_version: 1
+uuid: a28ea4a9
+links:
+  - uuid: c5ab3409
+    relation: depends-on
+    description: apply phase reuses the prerequisite checks defined in core/import/prerequisite-check

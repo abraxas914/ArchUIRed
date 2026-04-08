@@ -1,0 +1,10 @@
+.label {
+  background: var(--bg-surface0);
+  border: 1px solid var(--bg-surface1);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.65rem;
+  color: var(--overlay1);
+  pointer-events: all;
+  cursor: default;
+}

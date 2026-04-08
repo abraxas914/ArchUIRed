@@ -16,13 +16,18 @@ The CLI is not a documentation browser, a search tool, or a primary access inter
 ## Commands
 
 ```
-archui validate [path]    Run all validators against [path] (default: cwd)
-archui index --fix        Rebuild .archui/index.yaml from the live filesystem
-archui sync [path]        Trigger on-demand LLM sync: collects git diff, builds impact set, applies LLM-generated patches
-archui migrate [path]     Apply pending schema migrations to bring the project to the current schema version
-archui new <name> [path]  Create a new module folder with a README.md stub and auto-generated UUID at [path]/<name>/
-archui merge <src> <dst>  Merge one ArchUI project into another, detecting and prompting to resolve UUID collisions
-archui run                Trigger any module command using the AI agent (see cli/run-command)
+archui validate [path]              Run all validators against [path] (default: cwd)
+archui validate --level <1|2|3>     Validate up to a specific conformance level only
+archui index --fix                  Rebuild .archui/index.yaml from the live filesystem
+archui sync [path]                  Trigger on-demand LLM sync: collects git diff, builds impact set, applies LLM-generated patches
+archui migrate [path]               Apply pending schema migrations to bring the project to the current schema version
+archui new <name> [path]            Create a new module folder with a README.md stub and auto-generated UUID at [path]/<name>/
+archui merge <src> <dst>            Merge one ArchUI project into another, detecting and prompting to resolve UUID collisions
+archui init [path]                  Initialize a new ArchUI project at [path] by creating root README.md and .archui/index.yaml
+archui import [path] --analyze      Scan an existing project and report its current conformance level
+archui import [path] --preview      Preview what --apply would create, without writing anything
+archui import [path] --apply        Convert an existing project to ArchUI format (use --partial for L0→L2, --deepen for L2→L3)
+archui run                          Trigger any module command using the AI agent (see cli/run-command)
 ```
 
 The `run` command accepts a module path or name and a command name, then invokes the AI agent with that command's skill document:

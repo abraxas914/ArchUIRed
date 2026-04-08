@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ArchUI is a dual-interface knowledge management system — see README.md for full details.
 
 Key points:
-- **Filesystem is the source of truth.** No database. All knowledge lives as folders and `README.md` files.
+- **Filesystem is the source of truth.** No database. All knowledge lives as folders and typed identity documents (`README.md`, `SKILL.md`, `SPEC.md`, `MEMORY.md`, `HARNESS.md`).
 - **GUI** is a node-based visual canvas (in the style of [ComfyUI](https://github.com/comfyanonymous/ComfyUI)) (cross-platform: Web, Electron, iOS native, Android native).
 - **CLI** is a validator — it checks filesystem conformance after agent modifications.
 - **LLM sync** is triggered on-demand via `git diff`, not on every human edit.
@@ -30,9 +30,9 @@ UI consistency across platforms is maintained via **Figma MCP** as the shared de
 The CLI validates these rules. Every valid ArchUI project must follow them:
 
 1. Every module is a **folder**.
-2. Every folder must contain a `README.md` with YAML frontmatter (`name`, `description`) and a Markdown body.
-3. Every folder must contain a `.archui/index.yaml` with structural metadata (`uuid`, `submodules`, `links`, `layout`).
-4. `README.md` contains **only** `name` and `description` — no uuid, no submodules, no links. These belong in `.archui/index.yaml`.
+2. Every folder must contain exactly one typed identity document: `SPEC.md`, `HARNESS.md`, `MEMORY.md`, `SKILL.md`, or `README.md` (generic fallback). All use the same frontmatter: `name` and `description` only.
+3. Every folder must contain a `.archui/index.yaml` with structural metadata (`uuid`, `submodules`, `links`).
+4. Identity documents contain **only** `name` and `description` — no uuid, no submodules, no links. These belong in `.archui/index.yaml`.
 5. The `description` frontmatter field is the short summary always loaded into agent context.
 6. Cross-module links use **UUID**, not file paths. UUIDs are stable across renames/moves.
 7. Each link entry (in `.archui/index.yaml`) has a `uuid` (required) and optional `relation` and `description` fields.
@@ -40,6 +40,9 @@ The CLI validates these rules. Every valid ArchUI project must follow them:
 9. `submodules` in `.archui/index.yaml` is a **map** of `folder-name → child-uuid`. It must match actual subfolders on disk (bidirectional).
 10. The only allowed non-module subfolder is `resources/`.
 11. Structure is infinitely nestable — the same rules apply at every level.
+12. **SPEC modules** must contain exactly one HARNESS submodule and one MEMORY submodule.
+13. **HARNESS modules** must have exactly one link (to their parent SPEC). No other links permitted.
+14. **MEMORY modules** should link only to their parent SPEC (warning if violated, not error).
 
 ## Repository Structure
 

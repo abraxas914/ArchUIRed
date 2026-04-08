@@ -11,4 +11,3 @@ links:
   - uuid: aa100006
     relation: depends-on
     description: 宣传册内容来源于 project-packaging 的问题陈述、竞品分析和市场数据
-layout: {}

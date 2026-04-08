@@ -21,7 +21,3 @@ links:
     relation: references
     description: The CLI module provides file-sync and LLM operations that the web
       server can invoke via subprocess for on-demand sync workflows.
-layout:
-  de000002:
-    x: "1049.6116705175991"
-    y: "366.8258782234175"

@@ -26,4 +26,4 @@ If a canvas has no entry in `layout.yaml`, or if specific submodule UUIDs are mi
 
 If `layout.yaml` contains a UUID that no longer exists as a module, the entry is silently ignored. `archui index --fix` prunes stale layout entries as a side effect.
 
-This file is purely a display hint. It has no effect on the module graph, link resolution, or filesystem structure.
+This file is purely a display hint. It has no effect on the module graph, link resolution, or filesystem structure. Layout data is independent from `index.yaml` — canvas positions are not stored in any module's `.archui/index.yaml`. `layout.yaml` is a single global file at the project root only.

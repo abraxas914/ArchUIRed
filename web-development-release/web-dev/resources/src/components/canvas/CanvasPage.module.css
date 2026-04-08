@@ -1,0 +1,68 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg-base);
+}
+
+.canvas {
+  flex: 1;
+  background: var(--canvas-bg);
+}
+
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--overlay1);
+  font-size: 0.875rem;
+}
+
+.errorBanner {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(243, 139, 168, .15);
+  border: 1px solid var(--red);
+  color: var(--red);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  z-index: 100;
+  max-width: 480px;
+  text-align: center;
+}
+
+.toolbar {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+
+.toolBtn {
+  padding: 5px 12px;
+  background: var(--bg-crust);
+  border: 1px solid var(--bg-surface1);
+  border-radius: 6px;
+  color: var(--subtext1);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.toolBtn:hover { background: var(--bg-surface0); color: var(--text); }
+
+.emptyHint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+}
+.emptyHint h3 { color: var(--overlay1); font-size: 1rem; margin-bottom: 6px; }
+.emptyHint p  { color: var(--overlay0); font-size: 0.8rem; }

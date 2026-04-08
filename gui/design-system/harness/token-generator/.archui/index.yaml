@@ -1,0 +1,9 @@
+schema_version: 1
+uuid: e26a6d20
+links:
+  - uuid: 93ab33c4
+    relation: depends-on
+    description: Calls the Figma MCP using patterns defined in figma-integration to fetch Foundations page tokens.
+  - uuid: 3ccb57fd
+    relation: depends-on
+    description: The token vocabulary in foundations defines the expected set of tokens the generator must produce.

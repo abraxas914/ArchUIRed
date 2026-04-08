@@ -1,0 +1,13 @@
+schema_version: 1
+uuid: b7ba3280
+submodules:
+  source-detection: dc151a6e
+  conformance-report: 34ad32d6
+  partial-compliance: 5a578ab2
+links:
+  - uuid: 3f7b2e9d
+    relation: related-to
+    description: adoption covers initial adoption; migration covers schema version upgrades — complementary, non-overlapping scopes
+  - uuid: f7cbda7f
+    relation: related-to
+    description: adoption defines the conformance concepts that both the CLI import command and the GUI import flow implement

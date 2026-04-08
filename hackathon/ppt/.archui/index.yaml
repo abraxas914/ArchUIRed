@@ -11,4 +11,3 @@ links:
   - uuid: aa10000c
     relation: depends-on
     description: PPT 的色彩、字体、视觉调性遵循 vi 模块定义的品牌规范
-layout: {}

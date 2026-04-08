@@ -10,7 +10,3 @@ links:
     description: File-sync uses the UUID system to maintain stable module identity
       across renames and moves, and updates .archui/index.yaml whenever modules
       are created, moved, or renamed.
-layout:
-  5e2a8f4b:
-    x: "551.7796021945652"
-    y: "90.56068838574275"

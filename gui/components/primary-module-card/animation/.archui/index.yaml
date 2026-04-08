@@ -6,7 +6,3 @@ links:
   - uuid: 6f1c4a9d
     relation: implements
     description: Implements the animation layer for the primary-module-card component.
-layout:
-  ca12662f:
-    x: "67.40611506984044"
-    y: "-5.159670227001467"

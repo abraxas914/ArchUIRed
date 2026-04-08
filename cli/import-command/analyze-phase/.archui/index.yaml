@@ -1,0 +1,9 @@
+schema_version: 1
+uuid: "32557333"
+links:
+  - uuid: dc151a6e
+    relation: implements
+    description: analyze phase applies the source-detection heuristics defined in core/adoption/source-detection
+  - uuid: 34ad32d6
+    relation: implements
+    description: analyze phase outputs the conformance report format defined in core/adoption/conformance-report

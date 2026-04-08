@@ -81,9 +81,19 @@ links:
     description: Needs this module for token validation.
   - uuid: c7d8e9f0
     relation: references
-layout:                     # canvas positions for children (set by GUI)
-  e5f6g7h8: {x: 100, y: 200}
 ```
+
+### .archui/layout.yaml
+
+A single file at the project root (`.archui/layout.yaml`) stores canvas card positions for the GUI. The format maps each parent module UUID to a set of child UUIDs with `{x, y}` coordinates:
+
+```yaml
+<parent-uuid>:
+  <child-uuid>: {x: 120, y: 340}
+  <child-uuid>: {x: 400, y: 100}
+```
+
+The GUI writes this file when a user drags a node on the canvas. It is purely a display hint — it has no effect on the module graph, link resolution, or filesystem structure. If the file is missing or a canvas level has no entry, positions are auto-generated.
 
 ### Link Rules
 

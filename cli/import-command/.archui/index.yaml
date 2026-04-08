@@ -1,0 +1,14 @@
+schema_version: 1
+uuid: 5477232e
+submodules:
+  analyze-phase: "32557333"
+  preview-phase: 05f43c1a
+  apply-phase: a28ea4a9
+  partial-mode: 9e10465a
+links:
+  - uuid: b7ba3280
+    relation: depends-on
+    description: import command implements the adoption concepts (conformance levels, source detection) defined in core/adoption
+  - uuid: f7cbda7f
+    relation: related-to
+    description: GUI import flow and CLI import command are parallel paths for the same adoption process

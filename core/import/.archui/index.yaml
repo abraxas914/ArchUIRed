@@ -10,3 +10,9 @@ links:
   - uuid: 74bec9da
     relation: depends-on
     description: import triggers a project load after conversion completes
+  - uuid: b7ba3280
+    relation: related-to
+    description: adoption defines the conformance concepts (L0–L3, source detection) that both GUI import and CLI import implement
+  - uuid: 5477232e
+    relation: related-to
+    description: CLI import command is the terminal-facing parallel to the GUI import flow defined here

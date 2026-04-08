@@ -17,7 +17,7 @@ If `[path]` is omitted, the validator operates on the current working directory.
 
 The validator runs sub-validators in dependency order to produce the most useful error output:
 
-1. **structure-validator** — checks folder/file layout first, because frontmatter and link checks are meaningless if README files are missing.
+1. **structure-validator** — checks folder/file layout first (including the required `.archui/layout.yaml` at the project root), because frontmatter and link checks are meaningless if README files are missing.
 2. **frontmatter-validator** — checks YAML frontmatter once structure is confirmed sound.
 3. **link-validator** — checks link entries after frontmatter is confirmed parseable and the uuid index is available.
 4. **index-sync** — checks `.archui/index.yaml` consistency last, after all module metadata has been validated.
@@ -42,6 +42,22 @@ or
 
 ```
 Validation complete: all checks passed.
+```
+
+## Conformance Level Flags
+
+During incremental adoption, validation can be scoped to a specific conformance level (see `core/adoption/partial-compliance` for level definitions):
+
+```
+archui validate --level 1 [path]   # root module checks only
+archui validate --level 2 [path]   # root + top-level module checks
+archui validate [path]              # full tree check (default, equivalent to --level 3)
+```
+
+The `--strict` flag promotes all warnings to errors at any level:
+
+```
+archui validate --level 2 --strict [path]
 ```
 
 ## Running Sub-Validators Independently

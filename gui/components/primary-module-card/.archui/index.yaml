@@ -15,7 +15,3 @@ links:
     relation: depends-on
     description: Module-node reads name, description, submodules, and links from the
       module's README.md frontmatter to populate its visual fields.
-layout:
-  248b1055:
-    x: "363.1997474895294"
-    y: "-26.57756454764759"

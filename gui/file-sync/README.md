@@ -18,3 +18,5 @@ The index is a flat lookup table mapping every module UUID to its current filesy
 ## File Watching
 
 File-sync uses OS-level file watching to detect external edits. On detecting a change to any README.md, it re-parses the frontmatter, emits a module-updated event to the canvas renderer, and updates the index for any new subfolders. This ensures the GUI stays live when the user edits files outside the GUI.
+
+File-sync also manages `.archui/layout.yaml` at the project root, writing updated node positions whenever the user drags a card on the canvas.

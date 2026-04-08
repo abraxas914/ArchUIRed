@@ -1,0 +1,9 @@
+schema_version: 1
+uuid: bc404161
+links:
+  - uuid: 3ccb57fd
+    relation: depends-on
+    description: Lint rules are derived from the token vocabulary defined in foundations — any value outside the vocabulary triggers a violation.
+  - uuid: 7a1e5b8d
+    relation: related-to
+    description: Web development is the primary target — lint scans CSS modules and TSX files in the web-dev resources.

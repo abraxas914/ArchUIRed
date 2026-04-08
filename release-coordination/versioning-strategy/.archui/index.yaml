@@ -15,7 +15,3 @@ links:
     relation: references
     description: Web release agent must follow this versioning contract when tagging
       web/v* releases and reacting to schema/vX tags.
-layout:
-  4c8a5e9d:
-    x: "628.5980678492879"
-    y: "32.209106006394784"

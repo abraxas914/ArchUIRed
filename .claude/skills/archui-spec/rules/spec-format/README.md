@@ -1,8 +1,22 @@
 # Spec File Format Rules
 
-## Identity document format (README.md or SKILL.md)
+## Node types and identity documents
 
-The identity document is `README.md` if present, otherwise `SKILL.md`. Both use the same format. Only two frontmatter fields are allowed. Nothing else.
+Every module folder contains exactly one typed identity document. The filename determines the node type:
+
+| File | Node type | When to use |
+|---|---|---|
+| `SPEC.md` | Spec | An implementation specification with generated `resources/`. Must have HARNESS + MEMORY submodules. |
+| `HARNESS.md` | Harness | Test harness for a SPEC. Exactly one link → parent SPEC. |
+| `MEMORY.md` | Memory | Persistent memory record. Links only to parent SPEC (softly enforced). |
+| `SKILL.md` | Skill | Reusable skill or knowledge unit. No `resources/` typically. |
+| `README.md` | Generic | Untyped fallback when no stronger type applies. |
+
+**Precedence when multiple files exist:** `SPEC.md` > `HARNESS.md` > `MEMORY.md` > `SKILL.md` > `README.md`. Only the highest-priority file acts as the identity document.
+
+## Identity document format
+
+All identity document types share the same frontmatter schema. Only two fields are allowed:
 
 ```yaml
 ---
@@ -14,8 +28,6 @@ Body markdown here.
 ```
 
 **Forbidden in identity documents:** `uuid`, `submodules`, `links`, `layout`, any other structural field.
-
-**Priority:** When both `README.md` and `SKILL.md` exist, `README.md` is the identity document. `SKILL.md` is supplementary (e.g. agent-workflow instructions) and is not parsed for module identity.
 
 ## Default names for whitelisted hidden folders
 
@@ -48,8 +60,6 @@ links:
   - uuid: <target module UUID>
     relation: depends-on   # depends-on | implements | extends | references | related-to | custom
     description: Optional clarification
-layout:                 # managed by GUI — do not edit manually
-  <child-uuid>: {x: 0, y: 0}
 ```
 
 **Rules:**
@@ -57,7 +67,6 @@ layout:                 # managed by GUI — do not edit manually
 - `submodules` is a **map** (`folder-name → uuid`), not an array
 - `submodules` keys must match actual subfolders on disk (bidirectional)
 - `links` targets are UUIDs, not paths
-- `layout` is set by the GUI canvas — never edit manually
 
 ## Module design principles
 

@@ -1,0 +1,16 @@
+schema_version: 1
+uuid: d6b68f01
+submodules:
+  token-generator: e26a6d20
+  token-lint: bc404161
+  visual-snapshots: 032d5b9c
+links:
+  - uuid: 93ab33c4
+    relation: depends-on
+    description: The token generator calls the Figma MCP via patterns defined in figma-integration to fetch canonical token values.
+  - uuid: 3ccb57fd
+    relation: depends-on
+    description: All harness checks validate against the token vocabulary defined in foundations — color, typography, spacing, and elevation tokens.
+  - uuid: 7a1e5b8d
+    relation: related-to
+    description: Web development is the primary consumer — the implement-ui command on web-dev invokes harness checks before committing UI code.

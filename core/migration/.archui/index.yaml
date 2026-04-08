@@ -24,3 +24,6 @@ links:
   - uuid: 6b3d7f1e
     relation: references
     description: Schema version bumps are coordinated as part of the release process.
+  - uuid: b7ba3280
+    relation: references
+    description: adoption covers the complementary case — bringing a non-ArchUI project into ArchUI for the first time

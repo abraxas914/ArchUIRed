@@ -12,7 +12,3 @@ links:
     description: Link-renderer reads the links array from README.md frontmatter —
       uuid, relation, and description — which is defined and validated by the
       core link-system.
-layout:
-  cbdd7351:
-    x: "942.4697463081426"
-    y: "424.69137960523375"

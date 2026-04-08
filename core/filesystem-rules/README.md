@@ -1,6 +1,6 @@
 ---
 name: Filesystem Rules
-description: "Specifies the on-disk conventions that define a valid ArchUI project, including folder structure, required files, nesting rules, root-level hidden folder whitelist, and SKILL.md as an alternative identity document."
+description: "Specifies the on-disk conventions that define a valid ArchUI project, including folder structure, required files, nesting rules, root-level hidden folder whitelist, and typed identity documents (SKILL.md, SPEC.md, MEMORY.md, HARNESS.md)."
 ---
 
 ## Overview
@@ -15,17 +15,37 @@ These rules are intentionally minimal. They constrain structure, not content.
 
 A module is the atomic unit of organization in ArchUI. Modules cannot be files. There is no such thing as a "file module" — if something needs to be a module, it needs its own folder.
 
-### Rule 2: Every module folder must contain an identity document
+### Rule 2: Every module folder must contain a typed identity document
 
-The identity document is either `README.md` or `SKILL.md`. It must exist at the direct root of the folder, not in a subfolder.
+Every module folder must contain exactly one identity document at its direct root (not in a subfolder). The identity document determines the node type of the module.
 
-- If both exist, `README.md` takes precedence as the identity document. `SKILL.md` is treated as supplementary content.
-- If only `SKILL.md` exists, it is used as the identity document in place of `README.md`.
-- A folder with neither file is not a module — it is an error.
+| File | Node type | Typical `resources/` | Description |
+|---|---|---|---|
+| `README.md` | Generic | Optional | Untyped module. Used when no stronger type applies. |
+| `SKILL.md` | Skill / knowledge | No | A reusable skill or knowledge unit. Compatible with traditional skill file format. |
+| `SPEC.md` | Implementation spec | Yes | An implementation specification. Typically accompanied by generated `resources/`. |
+| `MEMORY.md` | Memory | No | A persistent memory record. Typically not accompanied by `resources/`. |
+| `HARNESS.md` | Test harness | Yes | A test harness tied exclusively to one SPEC module. Typically accompanied by `resources/`. |
+
+**Precedence when multiple identity documents are present:** `SPEC.md` > `HARNESS.md` > `MEMORY.md` > `SKILL.md` > `README.md`. Only the highest-priority file is used as the identity document; lower-priority files are treated as supplementary content.
+
+A folder with none of these files is not a module — it is a validation error.
 
 ```
-my-module/
-└── README.md        ✓ required (or SKILL.md if README.md is absent)
+spec-module/
+└── SPEC.md          ✓ identity document (spec node)
+
+skill-module/
+└── SKILL.md         ✓ identity document (skill node)
+
+harness-module/
+└── HARNESS.md       ✓ identity document (harness node)
+
+memory-module/
+└── MEMORY.md        ✓ identity document (memory node)
+
+legacy-module/
+└── README.md        ✓ identity document (generic node)
 ```
 
 ### Rule 3: The identity document must have valid YAML frontmatter with `name` and `description`
@@ -41,7 +61,7 @@ description: A one-sentence summary of what this module does.
 
 ### Rule 4: Every module folder must contain a `.archui/index.yaml`
 
-The `.archui/index.yaml` file holds all structural metadata for the module. Required field: `uuid`. Optional fields: `submodules` (map), `links` (array), `layout` (map).
+The `.archui/index.yaml` file holds all structural metadata for the module. Required field: `uuid`. Optional fields: `submodules` (map), `links` (array).
 
 The `.archui/` directory may also contain a `commands/` subfolder for module command definitions. Each file in `commands/` is a `.md` file with `name`, `description`, and an optional `icon` frontmatter field, plus an agent-instruction body. Command files are not ArchUI modules — they do not require `.archui/index.yaml`.
 
@@ -55,7 +75,11 @@ links:
     relation: depends-on
 ```
 
-### Rule 5: All subfolders must be declared submodules or `resources/`
+### Rule 5: The project root must contain `.archui/layout.yaml`
+
+The `.archui/layout.yaml` file stores canvas card positions for the GUI. It is a single file at the project root (not per-module). Top-level keys are parent module UUIDs; values are maps of child UUID → `{x, y}`. This file is a display hint only — it has no effect on the module graph, link resolution, or filesystem structure. The CLI validator checks for its existence.
+
+### Rule 6: All subfolders must be declared submodules or `resources/`
 
 The only two categories of subfolder permitted inside a module are:
 
@@ -64,7 +88,7 @@ The only two categories of subfolder permitted inside a module are:
 
 Any subfolder that is neither a declared submodule nor `resources/` is a validation error.
 
-### Rule 6: Root-level hidden folder whitelist
+### Rule 7: Root-level hidden folder whitelist
 
 At the **project root only**, the following hidden folders are whitelisted — they are treated as potential ArchUI modules and are traversed during project loading:
 
@@ -81,19 +105,55 @@ Whitelisted hidden folders follow the same rules as regular modules: they must h
 
 **Non-root hidden folders are never traversed.** The whitelist applies only at depth 0 (the project root). Hidden folders inside any submodule remain invisible to ArchUI tooling.
 
-### Rule 7: Structure is infinitely nestable
+### Rule 8: Structure is infinitely nestable
 
-There is no depth limit on module nesting. The same rules apply uniformly at every level, with the exception of the root-level hidden folder whitelist (Rule 6).
+There is no depth limit on module nesting. The same rules apply uniformly at every level, with the exception of the root-level hidden folder whitelist (Rule 7).
 
-### Rule 8: Module folder names are path identifiers
+### Rule 9: Module folder names are path identifiers
 
 Folder names form the human-readable path to a module (e.g., `core/filesystem-rules`). They should be lowercase, hyphen-separated, and descriptive. Folder names can change without breaking cross-module links (links use UUIDs).
+
+### Rule 10: SPEC modules must contain exactly one HARNESS submodule and one MEMORY submodule
+
+A module whose identity document is `SPEC.md` must declare, as direct submodules, exactly one HARNESS node and exactly one MEMORY node. These submodules must appear in the `submodules` map in `.archui/index.yaml`.
+
+```
+my-feature/
+├── SPEC.md
+├── .archui/index.yaml          # submodules: { harness: <uuid>, memory: <uuid> }
+├── harness/
+│   ├── HARNESS.md
+│   └── .archui/index.yaml
+└── memory/
+    ├── MEMORY.md
+    └── .archui/index.yaml
+```
+
+Absence of either submodule is a validation error.
+
+### Rule 11: HARNESS modules must link exclusively to their parent SPEC
+
+A module whose identity document is `HARNESS.md` must have exactly one entry in its `links` array, and that entry must reference the UUID of its direct parent SPEC module. No other links are permitted on a HARNESS node.
+
+```yaml
+# harness/.archui/index.yaml
+uuid: a1b2c3d4
+links:
+  - uuid: e5f6a7b8      # must be the parent SPEC's uuid
+    relation: implements
+```
+
+### Rule 12: MEMORY modules should link only to their parent SPEC
+
+A MEMORY module is expected to link only to the SPEC module it was created under. Additional outbound links from a MEMORY node are a validation warning (not an error), but are architecturally discouraged.
 
 ## What is NOT a rule
 
 - **No constraint on identity document body content.** The prose below the frontmatter is free-form Markdown.
 - **No constraint on `resources/` contents.** Place any files or nested folders inside `resources/` — they are opaque to ArchUI tooling.
 - **No central index file.** The global UUID→path map is derived by walking the tree.
+- **No constraint on `layout.yaml` content.** The validator checks for the file's existence but does not validate its contents — stale UUIDs are silently ignored.
+- **No enforcement on `resources/` presence by node type.** The table in Rule 2 describes typical usage; the validator does not require or forbid `resources/` based on node type.
 
 ## Validation
 

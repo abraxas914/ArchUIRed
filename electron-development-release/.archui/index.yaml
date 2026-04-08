@@ -19,7 +19,3 @@ links:
     relation: references
     description: Core defines the ArchUI filesystem rules that the Electron main
       process enforces for all filesystem operations.
-layout:
-  8d4a7f5c:
-    x: "-335.8619280177819"
-    y: "217.96015734729914"

@@ -1,0 +1,6 @@
+schema_version: 1
+uuid: 5a578ab2
+links:
+  - uuid: 9e2b5d7c
+    relation: depends-on
+    description: partial compliance levels are defined in terms of the filesystem rules — each level enforces a subset of the full rule set

@@ -7,3 +7,6 @@ links:
     relation: related-to
     description: cli/validator depends-on filesystem-rules; the validator enforces
       every rule defined here
+  - uuid: 5a578ab2
+    relation: references
+    description: partial-compliance defines which subsets of these rules are enforced at each adoption level (L1/L2/L3)

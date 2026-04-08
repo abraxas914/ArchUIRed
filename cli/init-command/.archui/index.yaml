@@ -1,0 +1,6 @@
+schema_version: 1
+uuid: 485e9c29
+links:
+  - uuid: cd7d3790
+    relation: depends-on
+    description: init command creates files that conform to the schema defined in core/schema

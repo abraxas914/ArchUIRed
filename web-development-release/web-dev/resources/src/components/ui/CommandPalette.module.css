@@ -1,0 +1,40 @@
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.6);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding-top: 15vh;
+  z-index: 1000;
+}
+.palette {
+  background: #1e1e2e;
+  border: 1px solid #45475a;
+  border-radius: 10px;
+  width: 520px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0,0,0,.6);
+}
+.input {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-bottom: 1px solid #313244;
+  background: transparent;
+  color: #cdd6f4;
+  font-size: 1rem;
+  outline: none;
+  box-sizing: border-box;
+}
+.list { max-height: 340px; overflow-y: auto; }
+.item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #cdd6f4;
+  transition: background .1s;
+}
+.item:hover, .itemActive { background: #313244; }
+.itemIcon { font-size: 1rem; opacity: .7; }
+.itemLabel { flex: 1; }
+.itemHint { font-size: 0.75rem; color: #6c7086; }
+.empty { padding: 16px; text-align: center; color: #6c7086; font-size: 0.875rem; }

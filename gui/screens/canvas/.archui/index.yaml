@@ -17,7 +17,3 @@ links:
     relation: depends-on
     description: The canvas screen uses the navigation component to maintain the
       breadcrumb trail and handle drill-in/back transitions.
-layout:
-  cf028a7e:
-    x: "1076.5330884776915"
-    y: "476.7719985857873"

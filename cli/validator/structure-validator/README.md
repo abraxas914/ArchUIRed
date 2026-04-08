@@ -37,6 +37,9 @@ Hidden folders at any other depth are never traversed. Whitelisted hidden folder
 **`.archui/` is always exempt.**
 The `.archui/` hidden folder inside every module is the structural metadata container. It is never treated as a submodule and never validated as a module folder.
 
+**Project root must contain `.archui/layout.yaml`.**
+The canvas layout file must exist at the project root. Its contents are not validated by the structure validator (stale UUIDs are silently ignored by the GUI), but its absence is an error.
+
 **Submodule folder names must not contain spaces or uppercase letters.**
 
 ## Error Output
@@ -47,6 +50,7 @@ ERROR  [structure/missing-archui]         core/new-module/           folder has 
 ERROR  [structure/unexpected-file]        cli/validator/notes.md     unexpected file at module level
 ERROR  [structure/invalid-folder-name]    cli/My Module/             folder name contains uppercase or spaces
 ERROR  [archui/undeclared-subfolder]      core/.archui/index.yaml    subfolder 'orphan' exists but is not in submodules map
+ERROR  [structure/missing-layout]       .archui/layout.yaml        missing .archui/layout.yaml — canvas layout file is required at project root
 ```
 
 ## Relationship to Other Validators

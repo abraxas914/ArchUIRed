@@ -1,0 +1,15 @@
+schema_version: 1
+uuid: cd7d3790
+links:
+  - uuid: 1d3c7a9e
+    relation: extends
+    description: Formal Zod encoding of the README frontmatter rules defined in readme-schema
+  - uuid: 8b2e4f6d
+    relation: extends
+    description: Formal Zod encoding of the link system rules defined in link-system
+  - uuid: 4a6f8e3b
+    relation: extends
+    description: Formal Zod encoding of the UUID format rules defined in uuid-system
+  - uuid: 9e2b5d7c
+    relation: extends
+    description: Formal Zod encoding of the filesystem structure rules defined in filesystem-rules

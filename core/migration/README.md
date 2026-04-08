@@ -3,6 +3,10 @@ name: Migration
 description: "Defines how ArchUI projects are upgraded when the schema evolves in a backward-incompatible way, including the migration command, script conventions, and runbook template."
 ---
 
+## Scope
+
+This module covers **schema version upgrades only** — upgrading an existing ArchUI project from one schema version to the next (e.g., v1 → v2). It does not cover initial adoption of ArchUI by a project that has never used it. For the adoption path, see `core/adoption`.
+
 ## Overview
 
 This module is the runbook for ArchUI schema migrations. When the ArchUI spec changes in a backward-incompatible way — new required frontmatter fields, changed UUID format, new mandatory filesystem conventions, or renamed fields — existing projects must be upgraded to continue passing validation.

@@ -8,6 +8,9 @@ links:
     description: gui/file-sync depends-on uuid-system; file-sync is responsible for
       keeping the UUID index current when modules are moved or renamed
 layout:
-  stub:aa000002--4a6f8e3b:
-    x: "322.12758347811086"
-    y: "43.18958695277201"
+  aa000002:
+    x: 40
+    y: 40
+  stub-4b6a8d2e:
+    x: 318.8608848597276
+    y: 43.71798980454395
