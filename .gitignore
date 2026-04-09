@@ -43,4 +43,6 @@ npm-debug.log*
 
 # Temporary backups
 *.backup
+
+# Large media files
 *.mov

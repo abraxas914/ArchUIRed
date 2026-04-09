@@ -38,10 +38,7 @@ const EDGE_TYPES = { linkEdge: LinkEdge }
 
 const ACCENT_COUNT = 6
 
-interface CanvasPageProps {
-  theme: 'light' | 'dark'
-  onToggleTheme: () => void
-}
+interface CanvasPageProps {}
 
 function placeholderEntry(uuid: string): ProjectIndexEntry {
   return {
@@ -192,7 +189,7 @@ export function CanvasPage(props: CanvasPageProps) {
   )
 }
 
-function CanvasPageInner({ theme, onToggleTheme }: CanvasPageProps) {
+function CanvasPageInner({}: CanvasPageProps) {
   const currentModule = useCanvasStore(s => s.currentModule)
   const projectIndex = useCanvasStore(s => s.projectIndex)
   const adapter = useCanvasStore(s => s.adapter)
@@ -202,6 +199,7 @@ function CanvasPageInner({ theme, onToggleTheme }: CanvasPageProps) {
   const loading = useCanvasStore(s => s.loading)
   const error = useCanvasStore(s => s.error)
   const setError = useCanvasStore(s => s.setError)
+  const canvasContent = workspaceContent.canvas
 
   const [selectedUuid, setSelectedUuid] = useState<string | null>(null)
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
@@ -428,11 +426,6 @@ function CanvasPageInner({ theme, onToggleTheme }: CanvasPageProps) {
     return () => window.removeEventListener('keydown', onKey)
   }, [selectedUuid, projectIndex, showToast, doPaste])
 
-  const canvasContent = workspaceContent.canvas
-  const themeToggleLabel = theme === 'light'
-    ? canvasContent.toolbar.themeToggle.toDark
-    : canvasContent.toolbar.themeToggle.toLight
-
   const commands = useMemo<Command[]>(() => {
     const list: Command[] = [
       {
@@ -447,12 +440,6 @@ function CanvasPageInner({ theme, onToggleTheme }: CanvasPageProps) {
         icon: 'R',
         hint: canvasContent.commands.reloadHint,
         action: () => reload(),
-      },
-      {
-        id: 'toggle-theme',
-        label: themeToggleLabel,
-        icon: 'T',
-        action: onToggleTheme,
       },
     ]
 
@@ -469,7 +456,7 @@ function CanvasPageInner({ theme, onToggleTheme }: CanvasPageProps) {
     }
 
     return list
-  }, [canvasContent.commands, currentModule, navigate, onToggleTheme, reload, themeToggleLabel])
+  }, [canvasContent.commands, currentModule, navigate, reload])
 
   const selectedEntry = selectedUuid ? (projectIndex[selectedUuid] ?? placeholderEntry(selectedUuid)) : null
   const selectionAccent = selectedUuid ? accentIndexFromUuid(selectedUuid) : accentIndexFromUuid(currentModule?.uuid ?? '00000000')
@@ -520,7 +507,6 @@ function CanvasPageInner({ theme, onToggleTheme }: CanvasPageProps) {
         <div className={s.toolbar}>
           <button className={s.toolBtn} onClick={() => setShowNewModule(true)}>{canvasContent.toolbar.newChild}</button>
           <button className={s.toolBtn} onClick={() => reload()}>{canvasContent.toolbar.reload}</button>
-          <button className={s.toolBtn} onClick={onToggleTheme}>{themeToggleLabel}</button>
           <button className={s.toolBtn} onClick={() => setShowPalette(true)}>{canvasContent.toolbar.commandMenu}</button>
         </div>
 
@@ -528,10 +514,6 @@ function CanvasPageInner({ theme, onToggleTheme }: CanvasPageProps) {
           <div className={s.metricCard}>
             <span className={s.metricLabel}>{canvasContent.metrics.submodules}</span>
             <strong>{currentModule?.children.length ?? 0}</strong>
-          </div>
-          <div className={s.metricCard}>
-            <span className={s.metricLabel}>{canvasContent.metrics.theme}</span>
-            <strong>{theme}</strong>
           </div>
         </div>
 

@@ -1,8 +1,7 @@
 /**
  * AUTO-GENERATED FILE. DO NOT EDIT.
  * Regenerate with: npm run sync:design-docs
- * Document snapshot curated_at: 2026-04-09T03:10:00+08:00, 2026-04-09T03:10:00+08:00, 2026-04-09T03:10:00+08:00, 2026-04-09T03:10:00+08:00, 2026-04-09T03:10:00+08:00, 2026-04-09T21:35:00+08:00
- * Sources:
+ * Document snapshot curated_at: 2026-04-09T11:00:00+08:00, 2026-04-09T03:10:00+08:00, 2026-04-09T03:10:00+08:00, 2026-04-09T03:10:00+08:00, 2026-04-09T03:10:00+08:00 * Sources:
  * - gui/screens/landing/web-copy.yaml
  * - gui/screens/canvas/web-copy.yaml
  * - gui/components/detail-panel/web-copy.yaml
@@ -44,15 +43,15 @@ export const workspaceContent = {
   },
   "landing": {
     "brandWordmark": "ArchUI",
-    "subtitle": "Canvas-first knowledge workspace for humans and AI agents.",
+    "subtitle": "Agent-native knowledge orchestration engine.",
     "themeToggle": {
       "toLight": "Switch to light",
       "toDark": "Switch to dark"
     },
     "card": {
-      "kicker": "Deep Honey / Lake Workspace",
-      "title": "Open a project and step into the graph.",
-      "body": "This first wave focuses on the canvas workspace, so the entry page stays intentionally light while the workbench carries the visual identity."
+      "kicker": "Open a Project",
+      "title": "Step into the graph.",
+      "body": "Navigate your modules, trace dependencies, and give AI agents a reliable map of your codebase — all from the filesystem."
     },
     "actions": {
       "connectServer": "Connect to local server",
