@@ -13,7 +13,7 @@
 export const workspaceContent = {
   "landing": {
     "brandWordmark": "ArchUI",
-    "subtitle": "Enterprise knowledge infrastructure for the agentic era.",
+    "subtitle": "Agent-native knowledge orchestration engine.",
     "themeToggle": {
       "toLight": "Switch to light",
       "toDark": "Switch to dark"

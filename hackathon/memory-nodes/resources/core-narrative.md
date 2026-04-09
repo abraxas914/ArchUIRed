@@ -4,7 +4,7 @@
 
 ## 一句话定位
 
-**ArchUI 是为 agentic thinking 时代设计的企业级开发知识基础设施。**
+**ArchUI 是为 agentic thinking 时代设计的开发知识编排引擎。**
 
 ## 30 秒 Hook（Narrative 层）
 
@@ -12,11 +12,11 @@
 
 这个转变的瓶颈不在 AI 能力，而在**知识基础设施**——当前的文档系统（Confluence、Notion、README）都是为人类设计的，AI 只能勉强适配。
 
-**ArchUI 是第一个从第一天就为 agentic thinking 设计的企业级开发知识基础设施。**
+**ArchUI 是第一个从第一天就为 agentic thinking 设计的开发知识编排引擎。**
 
 ## 核心价值主张
 
-当你的团队有 50 个仓库、10 个 agent 在并行工作时，你需要的不是"更好的 Confluence"，而是"agent-native 的知识基础设施"。
+当你的团队有 50 个仓库、10 个 agent 在并行工作时，你需要的不是"更好的 Confluence"，而是"agent-native 的知识编排引擎"。
 
 ArchUI 让 AI agent 能够：
 - **可靠地导航**：通过 UUID 链接系统，跨仓库的依赖关系稳定可追踪
@@ -66,7 +66,7 @@ ArchUI 让 AI agent 能够：
 
 ## 长期愿景
 
-成为 agentic engineering 时代的标准知识基础设施——就像 Git 是代码版本控制的标准一样，ArchUI 将成为开发知识管理的标准。
+成为 agentic engineering 时代的标准知识编排引擎——就像 Git 是代码版本控制的标准一样，ArchUI 将成为开发知识管理的标准。
 
 ## 使用规则
 
